@@ -10,5 +10,4 @@ blueprints = [
     rol_bp,
     permiso_bp,
     rol_permiso_bp,
-    auditoria_bp
 ]

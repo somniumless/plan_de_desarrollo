@@ -4,6 +4,14 @@ from models import Usuario
 
 usuario_bp = Blueprint('usuario_bp', __name__)
 
+def usuario_to_dict(usuario):
+    return {
+        'usuario_id': usuario.usuario_id,
+        'nombre': usuario.nombre,
+        'email': usuario.email,
+        # agrega otros campos que quieras enviar al cliente
+    }
+
 @usuario_bp.route('/usuarios', methods=['POST'])
 def crear_usuario():
     data = request.get_json()
@@ -15,12 +23,12 @@ def crear_usuario():
 @usuario_bp.route('/usuarios', methods=['GET'])
 def obtener_usuarios():
     usuarios = Usuario.query.all()
-    return jsonify([u.__dict__ for u in usuarios])
+    return jsonify([usuario_to_dict(u) for u in usuarios])
 
 @usuario_bp.route('/usuarios/<string:usuario_id>', methods=['GET'])
 def obtener_usuario(usuario_id):
     usuario = Usuario.query.get_or_404(usuario_id)
-    return jsonify(usuario.__dict__)
+    return jsonify(usuario_to_dict(usuario))
 
 @usuario_bp.route('/usuarios/<string:usuario_id>', methods=['PUT'])
 def actualizar_usuario(usuario_id):
