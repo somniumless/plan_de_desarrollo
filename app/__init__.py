@@ -19,16 +19,22 @@ def create_app():
     login_manager.login_view = 'auth.login'
     migrate.init_app(app, db)
 
-    # Importar y registrar blueprints
-    from .auth.routes import auth as auth_blueprint
-    from .metas.routes import metas as metas_blueprint
-    from .indicadores import init_indicadores  # si tienes esta función en indicadores/__init__.py
+    # Importar y registrar Blueprints desde funciones init_*
+    from .auth import init_auth 
+    from .metas import init_metas
+    from .indicadores import init_indicadores
+    from .documentos import init_documentos
+    from .notificaciones import init_notificaciones
+    from .reportes import init_reportes
+    from .auditoria import init_auditoria
 
-    app.register_blueprint(auth_blueprint)
-    app.register_blueprint(metas_blueprint)
-
-
+    init_auth(app)
+    init_metas(app)
     init_indicadores(app)
+    init_documentos(app)
+    init_notificaciones(app)
+    init_reportes(app) 
+    init_auditoria(app)
 
     return app
 
