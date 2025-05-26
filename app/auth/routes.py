@@ -1,10 +1,31 @@
-from flask import Blueprint, render_template, redirect, url_for
-from flask_login import login_user
-from ..models import Usuario
-from .. import db
+from flask import Blueprint, request, jsonify, redirect, url_for, flash
+from werkzeug.security import generate_password_hash
+from .models import Usuario, Rol
+from app import db
 
-auth = Blueprint('auth', __name__)
+auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
 
-@auth.route('/login')
+@auth_bp.route('/register', methods=['POST'])
+def register():
+    data = request.get_json()
+    hashed_password = generate_password_hash(data['password'])
+    new_user = Usuario(
+        usuario_id=data['usuario_id'],
+        rol_id=data['rol_id'],
+        nombre=data['nombre'],
+        email=data['email'],
+        password_hash=hashed_password
+    )
+    db.session.add(new_user)
+    db.session.commit()
+    return jsonify({"message": "Usuario creado"}), 201
+
+@auth_bp.route('/login', methods=['POST'])
 def login():
-    return render_template('login.html')
+    # Lógica de login (usar Flask-Login)
+    pass
+
+@auth_bp.route('/roles', methods=['GET'])
+def list_roles():
+    roles = Rol.query.all()
+    return jsonify([{"rol_id": r.rol_id, "nombre": r.nombre} for r in roles])
