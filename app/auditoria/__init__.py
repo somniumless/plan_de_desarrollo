@@ -1,4 +1,9 @@
-def init_auditoria(app):
-    from routes import auditoria_bp 
-    app.register_blueprint(auditoria_bp )
+# app/auditoria/__init__.py
 
+from flask import Blueprint
+from .routes import auditoria_bp 
+
+def init_auditoria(app):
+    app.register_blueprint(auditoria_bp)
+    
+    print("Módulo de Auditoría inicializado.")

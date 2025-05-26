@@ -1,8 +1,9 @@
 from app import db
-from flask_login import UserMixin
+from flask_login import UserMixin 
 from werkzeug.security import generate_password_hash, check_password_hash
 import enum
 from sqlalchemy.dialects.mysql import TINYINT
+from datetime import datetime 
 
 class Rol(db.Model):
     __tablename__ = 'Rol'
@@ -20,9 +21,6 @@ class Rol(db.Model):
     def __repr__(self):
         return f"<Rol {self.rol_id} - {self.nombre}>"
 
-
-
-# Enum de nivel de acceso
 class NivelAcceso(enum.Enum):
     LECTURA = "LECTURA"
     ESCRITURA = "ESCRITURA"
@@ -48,7 +46,6 @@ class RolPermiso(db.Model):
     permiso_id = db.Column(db.String(20), db.ForeignKey('Permiso.permiso_id', ondelete='CASCADE', onupdate='CASCADE'), primary_key=True)
     fecha_asignacion = db.Column(db.DateTime, server_default=db.func.current_timestamp())
 
-    # Relaciones inversas (opcional, si quieres acceder desde Rol o Permiso)
     rol = db.relationship('Rol', backref=db.backref('permisos_asignados', cascade='all, delete-orphan'))
     permiso = db.relationship('Permiso', backref=db.backref('roles_asociados', cascade='all, delete-orphan'))
 
@@ -56,7 +53,7 @@ class RolPermiso(db.Model):
         return f"<RolPermiso rol_id={self.rol_id}, permiso_id={self.permiso_id}>"
 
 
-class Usuario(db.Model):
+class Usuario(db.Model, UserMixin):
     __tablename__ = 'Usuario'
 
     usuario_id = db.Column(db.String(20), primary_key=True)
@@ -68,13 +65,34 @@ class Usuario(db.Model):
 
     fecha_creacion = db.Column(db.DateTime, server_default=db.func.current_timestamp())
     ultimo_login = db.Column(db.DateTime)
-    activo = db.Column(db.Boolean, default=True)
+    activo = db.Column(db.Boolean, default=True) 
 
     intentos_fallidos = db.Column(TINYINT(unsigned=True), default=0)
     fecha_bloqueo = db.Column(db.DateTime)
 
-    # Relación con la tabla Rol
     rol = db.relationship('Rol', backref=db.backref('usuarios', lazy=True))
+
+    def set_password(self, password):
+        self.password_hash = generate_password_hash(password)
+
+    def check_password(self, password):
+        return check_password_hash(self.password_hash, password)
+
+    @property
+    def is_authenticated(self):
+        return True 
+
+    @property
+    def is_active(self):
+        if self.fecha_bloqueo and self.fecha_bloqueo > datetime.utcnow():
+            return False 
+        return self.activo 
+
+    @property
+    def is_anonymous(self):
+        return False 
+    def get_id(self):
+        return str(self.usuario_id)
 
     def __repr__(self):
         return f"<Usuario {self.usuario_id} - {self.nombre}>"

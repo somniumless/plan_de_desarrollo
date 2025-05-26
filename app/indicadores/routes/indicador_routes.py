@@ -1,51 +1,89 @@
+# app/indicadores/routes/indicador_routes.py
+
 from flask import Blueprint, request, jsonify
-from app import db
-from indicadores.models import MetaIndicador
+from app import db 
+from app.indicadores.models import Indicador, FrecuenciaCalculo 
+from app.auditoria.utils import registrar_auditoria, ResultadoAccion
+from app.auditoria.decorators import audit_action
+from flask_login import current_user 
+from datetime import datetime 
 
-# Definición del blueprint para meta indicadores
-meta_indicador_bp = Blueprint('meta_indicador_bp', __name__)
+indicador_bp = Blueprint('indicador_bp', __name__, url_prefix='/indicadores') 
 
-# Función para convertir MetaIndicador a diccionario JSON serializable
-def meta_indicador_to_dict(meta):
+def indicador_to_dict(indicador):
     return {
-        'meta_id': meta.meta_id,
-        'indicador_id': meta.indicador_id,
-        'valor_actual': float(meta.valor_actual) if meta.valor_actual is not None else None,
-        'meta': float(meta.meta) if meta.meta is not None else None,
-        'fecha_calculo': meta.fecha_calculo.isoformat() if meta.fecha_calculo else None,
-        'calculado_por': meta.calculado_por
+        'indicador_id': indicador.indicador_id,
+        'nombre': indicador.nombre,
+        'formula': indicador.formula,
+        'descripcion': indicador.descripcion,
+        'unidad_medida': indicador.unidad_medida,
+        'frecuencia_calculo': indicador.frecuencia_calculo.value if indicador.frecuencia_calculo else None, # Accede al valor del Enum
+        'es_critico': indicador.es_critico,
+        'fecha_creacion': indicador.fecha_creacion.isoformat() if indicador.fecha_creacion else None,
     }
 
-@meta_indicador_bp.route('/meta_indicadores', methods=['POST'])
-def crear_meta_indicador():
+@indicador_bp.route('/', methods=['POST']) 
+@audit_action(
+    accion='CREAR_INDICADOR',
+    entidad_afectada_name='Indicador',
+    include_args_in_details=['data'], 
+    obj_id_attr='indicador_id' 
+)
+def crear_indicador():
     data = request.get_json()
-    nuevo = MetaIndicador(**data)
+    
+    frecuencia_str = data.get('frecuencia_calculo')
+    if frecuencia_str:
+        try:
+            data['frecuencia_calculo'] = FrecuenciaCalculo[frecuencia_str.upper()]
+        except KeyError:
+            return jsonify({'error': f'Frecuencia de cálculo inválida: {frecuencia_str}. Valores permitidos: {", ".join([e.value for e in FrecuenciaCalculo])}.'}), 400
+
+    nuevo = Indicador(**data)
     db.session.add(nuevo)
     db.session.commit()
-    return jsonify({'mensaje': 'MetaIndicador creado exitosamente'}), 201
+    return jsonify({'mensaje': 'Indicador creado exitosamente', 'indicador_id': nuevo.indicador_id}), 201
 
-@meta_indicador_bp.route('/meta_indicadores', methods=['GET'])
-def obtener_meta_indicadores():
-    metas = MetaIndicador.query.all()
-    return jsonify([meta_indicador_to_dict(m) for m in metas])
+@indicador_bp.route('/', methods=['GET']) 
+def obtener_indicadores():
+    indicadores = Indicador.query.all()
+    return jsonify([indicador_to_dict(i) for i in indicadores])
 
-@meta_indicador_bp.route('/meta_indicadores/<string:meta_id>/<string:indicador_id>', methods=['GET'])
-def obtener_meta_indicador(meta_id, indicador_id):
-    meta = MetaIndicador.query.get_or_404((meta_id, indicador_id))
-    return jsonify(meta_indicador_to_dict(meta))
+@indicador_bp.route('/<string:indicador_id>', methods=['GET'])
+def obtener_indicador(indicador_id):
+    indicador = Indicador.query.get_or_404(indicador_id)
+    return jsonify(indicador_to_dict(indicador))
 
-@meta_indicador_bp.route('/meta_indicadores/<string:meta_id>/<string:indicador_id>', methods=['PUT'])
-def actualizar_meta_indicador(meta_id, indicador_id):
-    meta = MetaIndicador.query.get_or_404((meta_id, indicador_id))
+@indicador_bp.route('/<string:indicador_id>', methods=['PUT'])
+@audit_action(
+    accion='ACTUALIZAR_INDICADOR',
+    entidad_afectada_name='Indicador',
+    id_param_name='indicador_id', 
+    include_args_in_details=['data']
+)
+def actualizar_indicador(indicador_id):
+    indicador = Indicador.query.get_or_404(indicador_id)
     data = request.get_json()
     for key, value in data.items():
-        setattr(meta, key, value)
+        if key == 'frecuencia_calculo' and value is not None:
+            try:
+                setattr(indicador, key, FrecuenciaCalculo[value.upper()])
+            except KeyError:
+                return jsonify({'error': f'Frecuencia de cálculo inválida para {key}: {value}. Valores permitidos: {", ".join([e.value for e in FrecuenciaCalculo])}.'}), 400
+        else:
+            setattr(indicador, key, value)
     db.session.commit()
-    return jsonify({'mensaje': 'MetaIndicador actualizado exitosamente'})
+    return jsonify({'mensaje': 'Indicador actualizado exitosamente'})
 
-@meta_indicador_bp.route('/meta_indicadores/<string:meta_id>/<string:indicador_id>', methods=['DELETE'])
-def eliminar_meta_indicador(meta_id, indicador_id):
-    meta = MetaIndicador.query.get_or_404((meta_id, indicador_id))
-    db.session.delete(meta)
+@indicador_bp.route('/<string:indicador_id>', methods=['DELETE'])
+@audit_action(
+    accion='ELIMINAR_INDICADOR',
+    entidad_afectada_name='Indicador',
+    id_param_name='indicador_id', 
+    include_obj_attrs_in_details=['nombre', 'unidad_medida'] 
+)
+def eliminar_indicador(indicador_id):
+    indicador = Indicador.query.get_or_404(indicador_id)
+    db.session.delete(indicador)
     db.session.commit()
-    return jsonify({'mensaje': 'MetaIndicador eliminado exitosamente'})
+    return jsonify({'mensaje': 'Indicador eliminado exitosamente'})

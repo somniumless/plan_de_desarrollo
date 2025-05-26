@@ -1,9 +1,15 @@
 from app import db
 from datetime import datetime
-from sqlalchemy import Enum
-import enum
+from sqlalchemy import Enum 
+import enum 
 from sqlalchemy.orm import relationship
 from sqlalchemy import CheckConstraint
+
+class EstadoMetaEnum(enum.Enum):
+    PLANIFICADA = "PLANIFICADA"
+    EN_EJECUCION = "EN_EJECUCION"
+    CUMPLIDA = "CUMPLIDA"
+    CANCELADA = "CANCELADA"
 
 class Meta(db.Model):
     __tablename__ = 'Meta'
@@ -14,9 +20,8 @@ class Meta(db.Model):
     descripcion_resultado = db.Column(db.Text)
     unidad_medida = db.Column(db.String(50))
     estado = db.Column(
-        db.Enum('PLANIFICADA', 'EN_EJECUCION', 'CUMPLIDA', 'CANCELADA', 
-                name='estado_meta_enum'),
-        default='PLANIFICADA',
+        db.Enum(EstadoMetaEnum), 
+        default=EstadoMetaEnum.PLANIFICADA, 
         nullable=False
     )
     fecha_inicio = db.Column(db.Date)
@@ -27,7 +32,6 @@ class Meta(db.Model):
         nullable=False
     )
     
-
     avances = db.relationship('Avance', backref='meta', lazy=True)
     indicadores = db.relationship('Indicador', secondary='Meta_Indicador', backref='metas')
     entidades = db.relationship('EntidadResponsable', secondary='Meta_Entidad', backref='metas')
@@ -69,7 +73,6 @@ class MetaEntidad(db.Model):
         nullable=False
     )
     
-
     meta = db.relationship('Meta', backref=db.backref('meta_entidades', cascade='all, delete'))
     entidad = db.relationship('EntidadResponsable', backref=db.backref('meta_entidades', cascade='all, delete'))
 
@@ -90,10 +93,8 @@ class Avance(db.Model):
     usuario_aprobador = db.Column(db.String(20), db.ForeignKey('Usuario.usuario_id', ondelete='SET NULL'), nullable=True)
     fecha_aprobacion = db.Column(db.DateTime, nullable=True)
 
-
     usuario = relationship('Usuario', foreign_keys=[usuario_id], backref='avances_creados')
     aprobador = relationship('Usuario', foreign_keys=[usuario_aprobador], backref='avances_aprobados')
-
 
     __table_args__ = (
         CheckConstraint('porcentaje >= 0 AND porcentaje <= 100', name='check_porcentaje_range'),
