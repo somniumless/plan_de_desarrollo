@@ -21,9 +21,7 @@ def documento_to_dict(doc):
         "fecha_subida": doc.fecha_subida.isoformat() if doc.fecha_subida else None,
         "ubicacion_almacenamiento": doc.ubicacion_almacenamiento,
         "hash_archivo": doc.hash_archivo,
-        "eliminado": doc.eliminado,
-        "fecha_eliminacion": doc.fecha_eliminacion.isoformat() if doc.fecha_eliminacion else None,
-        "eliminado_por": doc.eliminado_por
+        "eliminado": doc.eliminado
     }
 
 @documento_bp.route('/', methods=['POST'])
