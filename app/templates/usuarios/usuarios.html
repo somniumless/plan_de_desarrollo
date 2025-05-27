@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestión de Usuarios</title>
+    <link rel="stylesheet" href="css/usuarios.css">
+    <link rel="stylesheet" href="css/all.css">
+</head>
+<body>
+    <header>
+        <h1>Gestión de Usuarios</h1>
+    </header>
+    <main>
+        <section>
+            <h2>Lista de Usuarios</h2>
+            <table id="tabla-usuarios">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Email</th>
+                        <th>Rol</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Usuarios se cargan aca -->
+                </tbody>
+            </table>
+        </section>
+        <section>
+            <h2>Crear/Editar Usuario</h2>
+            <form id="form-usuario">
+                <input type="hidden" id="usuario-id">
+                <label>Nombre: <input type="text" id="usuario-nombre" required></label>
+                <label>Email: <input type="email" id="usuario-email" required></label>
+                <label>Rol: <input type="text" id="usuario-rol" required></label>
+                <button type="submit">Guardar</button>
+                <button type="button" id="cancelar-edicion" style="display:none;">Cancelar</button>
+            </form>
+        </section>
+    </main>
+    <script src="js/usuarios.js"></script>
+</body>
+</html>
