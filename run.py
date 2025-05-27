@@ -5,6 +5,7 @@ from app.indicadores import init_indicadores
 from app.metas import init_metas
 from app.notificaciones import init_notificaciones
 from app.reportes import init_reportes
+from app.auth.routes import usuario_bp
 from app import create_app
 
 app = create_app()
