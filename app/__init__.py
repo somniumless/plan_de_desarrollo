@@ -1,5 +1,10 @@
 from flask import Flask
-from app.extensiones import db, login_manager, migrate
+from flask_login import LoginManager
+from flask_migrate import Migrate
+from app.extensiones import db  # ✅ Importas la instancia ya creada
+
+login_manager = LoginManager()
+migrate = Migrate()
 
 def create_app():
     app = Flask(__name__)
@@ -7,8 +12,7 @@ def create_app():
     app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:@localhost/proyecto_zipaquira'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-    # Inicializa extensiones
-    db.init_app(app)
+    db.init_app(app)  # ✅ Conecta la instancia a la app
     login_manager.init_app(app)
     login_manager.login_view = 'auth.login'
     migrate.init_app(app, db)
