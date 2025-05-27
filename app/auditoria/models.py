@@ -1,8 +1,11 @@
-from app import db
-from sqlalchemy import Enum, BigInteger
+# auditoria models.py
+
+from app.extensiones import db 
+from sqlalchemy import Enum, BigInteger, ForeignKey
 from sqlalchemy.orm import relationship
 import enum
-from datetime import datetime 
+from datetime import datetime
+from sqlalchemy.dialects.mysql import JSON 
 
 class ResultadoAccion(enum.Enum):
     EXITO = "EXITO"
@@ -10,22 +13,22 @@ class ResultadoAccion(enum.Enum):
     ADVERTENCIA = "ADVERTENCIA"
 
 class Auditoria(db.Model):
-    __tablename__ = 'Auditoria'
+    __tablename__ = 'auditoria' 
 
     auditoria_id = db.Column(BigInteger, primary_key=True, autoincrement=True)
 
-    usuario_id = db.Column(db.String(20), db.ForeignKey('Usuario.usuario_id', ondelete='SET NULL'), nullable=True)
+    usuario_id = db.Column(db.String(20), db.ForeignKey('usuario.usuario_id', ondelete='SET NULL'), nullable=True) 
     
     accion = db.Column(db.String(50), nullable=False)
     entidad_afectada = db.Column(db.String(50), nullable=False)
 
     id_entidad = db.Column(db.String(50), nullable=True) 
     fecha_accion = db.Column(db.DateTime, server_default=db.func.current_timestamp())
-    detalles = db.Column(db.JSON, nullable=True) 
+    detalles = db.Column(JSON, nullable=True) 
     user_agent = db.Column(db.String(255), nullable=True)
     resultado = db.Column(db.Enum(ResultadoAccion), nullable=False)
 
-    usuario = relationship('Usuario', backref='registros_auditoria', foreign_keys=[usuario_id])
+    usuario = relationship('Usuario', backref='registros_auditoria') 
 
     def __repr__(self):
         return f"<Auditoria {self.auditoria_id} - {self.accion}>"

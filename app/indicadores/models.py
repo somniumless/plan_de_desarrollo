@@ -1,5 +1,8 @@
-from app.extensiones import db
+# indicadores models.py
+
+from app.extensiones import db 
 import enum
+from sqlalchemy.orm import relationship 
 
 class FrecuenciaCalculo(enum.Enum):
     DIARIO = "DIARIO"
@@ -11,7 +14,7 @@ class FrecuenciaCalculo(enum.Enum):
     PERSONALIZADO = "PERSONALIZADO"
 
 class Indicador(db.Model):
-    __tablename__ = 'Indicador'
+    __tablename__ = 'indicador' 
 
     indicador_id = db.Column(db.String(20), primary_key=True)
     nombre = db.Column(db.String(100), nullable=False)
@@ -26,27 +29,27 @@ class Indicador(db.Model):
         return f"<Indicador {self.indicador_id} - {self.nombre}>"
 
 class MetaIndicador(db.Model):
-    __tablename__ = 'Meta_Indicador'
+    __tablename__ = 'meta_indicador' 
 
-    meta_id = db.Column(db.String(20), db.ForeignKey('Meta.meta_id', ondelete='CASCADE'), primary_key=True)
-    indicador_id = db.Column(db.String(20), db.ForeignKey('Indicador.indicador_id', ondelete='CASCADE'), primary_key=True)
+    meta_id = db.Column(db.String(20), db.ForeignKey('meta.meta_id', ondelete='CASCADE'), primary_key=True)
+    indicador_id = db.Column(db.String(20), db.ForeignKey('indicador.indicador_id', ondelete='CASCADE'), primary_key=True)
+    
     valor_actual = db.Column(db.Numeric(15, 2))
     meta = db.Column(db.Numeric(15, 2))
     fecha_calculo = db.Column(db.DateTime, server_default=db.func.current_timestamp())
-    calculado_por = db.Column(db.String(20), db.ForeignKey('Usuario.usuario_id', ondelete='SET NULL'))
+    calculado_por = db.Column(db.String(20), db.ForeignKey('usuario.usuario_id', ondelete='SET NULL'))
 
     meta_rel = db.relationship(
-        'Meta',
+        'Meta', 
         backref=db.backref('meta_indicadores', cascade='all, delete-orphan', overlaps="indicadores,metas"),
         overlaps="indicadores,metas"
     )
     indicador = db.relationship(
-        'Indicador',
+        'Indicador', 
         backref=db.backref('meta_indicadores', cascade='all, delete-orphan', overlaps="metas,indicadores"),
         overlaps="metas,indicadores"
     )
     
-    # Modificación clave: usar referencia de cadena para Usuario
     usuario = db.relationship('Usuario', backref=db.backref('meta_indicadores_calculados', lazy=True))
 
     def __repr__(self):

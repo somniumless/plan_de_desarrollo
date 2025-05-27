@@ -1,9 +1,13 @@
-from app.extensiones import db
+# metas models.py
+
+from app.extensiones import db 
 from datetime import datetime
 from sqlalchemy import Enum 
 import enum 
 from sqlalchemy.orm import relationship
 from sqlalchemy import CheckConstraint, ForeignKey
+from app.auth.models import EntidadResponsable, TipoEntidad, Usuario 
+
 
 class EstadoMetaEnum(enum.Enum):
     PLANIFICADA = "PLANIFICADA"
@@ -12,7 +16,7 @@ class EstadoMetaEnum(enum.Enum):
     CANCELADA = "CANCELADA"
 
 class Meta(db.Model):
-    __tablename__ = 'Meta'
+    __tablename__ = 'meta' 
     
     meta_id = db.Column(db.String(20), primary_key=True)
     nombre = db.Column(db.String(100), nullable=False)
@@ -33,47 +37,32 @@ class Meta(db.Model):
     )
     
     avances = db.relationship('Avance', backref='meta', lazy=True) 
+    
     indicadores = db.relationship(
         'Indicador',
-        secondary='Meta_Indicador',
+        secondary='meta_indicador', 
         backref=db.backref('metas', overlaps="meta_indicadores,indicador"),
         overlaps="meta_indicadores,indicador"
     )
-    entidades = db.relationship('EntidadResponsable', secondary='Meta_Entidad', backref='metas')
+
+    entidades = db.relationship('EntidadResponsable', secondary='meta_entidad', backref='metas') 
 
     def __repr__(self):
         return f'<Meta {self.meta_id}: {self.nombre}>'
 
-
-class TipoEntidad(enum.Enum):
-    LIDER = "LIDER"
-    CORRESPONSABLE = "CORRESPONSABLE"
-
-
-class EntidadResponsable(db.Model):
-    __tablename__ = 'Entidad_Responsable'
-
-    entidad_id = db.Column(db.String(20), primary_key=True)
-    nombre = db.Column(db.String(100), nullable=False)
-    tipo_entidad = db.Column(db.Enum(TipoEntidad), nullable=False)
-
-    def __repr__(self):
-        return f"<EntidadResponsable {self.entidad_id} - {self.nombre}>"
-
-
 class MetaEntidad(db.Model):
-    __tablename__ = 'Meta_Entidad'
+    __tablename__ = 'meta_entidad' 
     
     meta_id = db.Column(
         db.String(20),
-        db.ForeignKey('Meta.meta_id', ondelete='CASCADE'),
+        db.ForeignKey('meta.meta_id', ondelete='CASCADE'), 
         primary_key=True,
         nullable=False
     )
     
     entidad_id = db.Column(
         db.String(20),
-        db.ForeignKey('Entidad_Responsable.entidad_id', ondelete='CASCADE'),
+        db.ForeignKey('entidad_responsable.entidad_id', ondelete='CASCADE'), 
         primary_key=True,
         nullable=False
     )
@@ -85,10 +74,10 @@ class MetaEntidad(db.Model):
         return f'<MetaEntidad meta_id={self.meta_id} entidad_id={self.entidad_id}>'
 
 class Avance(db.Model):
-    __tablename__ = 'Avance'
+    __tablename__ = 'avance'
 
     avance_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    meta_id = db.Column(db.String(20), db.ForeignKey('Meta.meta_id'), nullable=False) 
+    meta_id = db.Column(db.String(20), db.ForeignKey('meta.meta_id'), nullable=False) 
     
     titulo = db.Column(db.String(100), nullable=False)
     descripcion = db.Column(db.Text, nullable=False)
@@ -96,8 +85,8 @@ class Avance(db.Model):
     porcentaje = db.Column(db.Numeric(5, 2), nullable=True)
     aprobado = db.Column(db.Boolean, default=False)
 
-    usuario_id = db.Column(db.String(20), db.ForeignKey('Usuario.usuario_id', ondelete='RESTRICT'), nullable=False)
-    usuario_aprobador = db.Column(db.String(20), db.ForeignKey('Usuario.usuario_id', ondelete='SET NULL'), nullable=True)
+    usuario_id = db.Column(db.String(20), db.ForeignKey('usuario.usuario_id', ondelete='RESTRICT'), nullable=False)
+    usuario_aprobador = db.Column(db.String(20), db.ForeignKey('usuario.usuario_id', ondelete='SET NULL'), nullable=True)
     fecha_aprobacion = db.Column(db.DateTime, nullable=True)
 
     usuario = relationship('Usuario', foreign_keys=[usuario_id], backref='avances_creados')
