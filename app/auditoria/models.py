@@ -22,7 +22,6 @@ class Auditoria(db.Model):
     id_entidad = db.Column(db.String(50), nullable=True) 
     fecha_accion = db.Column(db.DateTime, server_default=db.func.current_timestamp())
     detalles = db.Column(db.JSON, nullable=True) 
-    ip_origen = db.Column(db.String(45), nullable=True)
     user_agent = db.Column(db.String(255), nullable=True)
     resultado = db.Column(db.Enum(ResultadoAccion), nullable=False)
 
