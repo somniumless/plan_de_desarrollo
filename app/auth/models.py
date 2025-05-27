@@ -1,5 +1,5 @@
-from app import db
-from flask_login import UserMixin 
+from app import db, login_manager 
+from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 import enum
 from sqlalchemy.dialects.mysql import TINYINT
@@ -91,8 +91,13 @@ class Usuario(db.Model, UserMixin):
     @property
     def is_anonymous(self):
         return False 
+    
     def get_id(self):
         return str(self.usuario_id)
 
     def __repr__(self):
         return f"<Usuario {self.usuario_id} - {self.nombre}>"
+
+@login_manager.user_loader
+def load_user(user_id):
+    return Usuario.query.get(user_id)

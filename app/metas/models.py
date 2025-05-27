@@ -3,7 +3,7 @@ from datetime import datetime
 from sqlalchemy import Enum 
 import enum 
 from sqlalchemy.orm import relationship
-from sqlalchemy import CheckConstraint
+from sqlalchemy import CheckConstraint, ForeignKey
 
 class EstadoMetaEnum(enum.Enum):
     PLANIFICADA = "PLANIFICADA"
@@ -32,7 +32,7 @@ class Meta(db.Model):
         nullable=False
     )
     
-    avances = db.relationship('Avance', backref='meta', lazy=True)
+    avances = db.relationship('Avance', backref='meta', lazy=True) 
     indicadores = db.relationship('Indicador', secondary='Meta_Indicador', backref='metas')
     entidades = db.relationship('EntidadResponsable', secondary='Meta_Entidad', backref='metas')
 
@@ -83,6 +83,8 @@ class Avance(db.Model):
     __tablename__ = 'Avance'
 
     avance_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    meta_id = db.Column(db.String(20), db.ForeignKey('Meta.meta_id'), nullable=False) 
+    
     titulo = db.Column(db.String(100), nullable=False)
     descripcion = db.Column(db.Text, nullable=False)
     fecha_registro = db.Column(db.DateTime, server_default=db.func.current_timestamp())

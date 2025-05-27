@@ -9,8 +9,6 @@ def audit_action(accion, entidad_afectada_name, id_param_name=None, obj_id_attr=
         @wraps(f)
         def decorated_function(*args, **kwargs):
             usuario_id = current_user.usuario_id if current_user.is_authenticated else "ANONYMOUS"
-            ip_origen = request.remote_addr
-            user_agent = request.headers.get('User-Agent')
 
             detalles = {}
             if request.is_json:
@@ -53,11 +51,11 @@ def audit_action(accion, entidad_afectada_name, id_param_name=None, obj_id_attr=
                                 obj_afectado = arg
                                 break
                         if not obj_afectado:
-                             for kwarg_val in kwargs.values():
-                                if hasattr(kwarg_val, id_param_name) and getattr(kwarg_val, id_param_name) == id_entidad_auditoria:
-                                    obj_afectado = kwarg_val
-                                    break
-                
+                               for kwarg_val in kwargs.values():
+                                   if hasattr(kwarg_val, id_param_name) and getattr(kwarg_val, id_param_name) == id_entidad_auditoria:
+                                       obj_afectado = kwarg_val
+                                       break
+                        
                 if request.method == 'DELETE' and id_param_name and id_param_name in kwargs:
                     id_entidad_auditoria = kwargs[id_param_name]
 
@@ -75,8 +73,6 @@ def audit_action(accion, entidad_afectada_name, id_param_name=None, obj_id_attr=
                     entidad_afectada=entidad_afectada_name,
                     id_entidad=id_entidad_auditoria,
                     detalles=detalles,
-                    ip_origen=ip_origen,
-                    user_agent=user_agent,
                     resultado=ResultadoAccion.EXITO,
                     usuario_id=usuario_id
                 )
@@ -87,8 +83,6 @@ def audit_action(accion, entidad_afectada_name, id_param_name=None, obj_id_attr=
                     entidad_afectada=entidad_afectada_name,
                     id_entidad=id_entidad_auditoria, 
                     detalles={"error": str(e), "original_request_data": detalles.get('data')},
-                    ip_origen=ip_origen,
-                    user_agent=user_agent,
                     resultado=ResultadoAccion.FALLO,
                     usuario_id=usuario_id
                 )
