@@ -3,7 +3,7 @@ from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 import enum
 from sqlalchemy.dialects.mysql import TINYINT
-from datetime import datetime 
+from datetime import datetime  
 
 class Rol(db.Model):
     __tablename__ = 'Rol'

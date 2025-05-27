@@ -30,17 +30,44 @@ def meta_to_dict(meta):
 def crear_meta():
     data = request.get_json()
     
-    estado_str = data.get('estado')
-    if estado_str:
-        try:
-            data['estado'] = EstadoMetaEnum[estado_str.upper()] 
-        except KeyError:
-            return jsonify({'error': f'Estado inválido: {estado_str}. Valores permitidos: {", ".join([e.value for e in EstadoMetaEnum])}.'}), 400
+    # Validación de campos requeridos
+    if 'meta_id' not in data:
+        return jsonify({'error': 'El campo meta_id es requerido'}), 400
+        
+    if 'titulo' in data:
+        data['nombre'] = data.pop('titulo')
+    elif 'nombre' not in data:
+        return jsonify({'error': 'Se requiere nombre o titulo para la meta'}), 400
     
-    meta = Meta(**data)
-    db.session.add(meta)
-    db.session.commit()
-    return jsonify({'mensaje': 'Meta creada exitosamente', 'meta_id': meta.meta_id}), 201
+    # Manejo del estado
+    if 'estado' in data:
+        try:
+            data['estado'] = EstadoMetaEnum[data['estado'].upper()]
+        except KeyError:
+            return jsonify({
+                'error': f'Estado inválido. Valores permitidos: {", ".join([e.value for e in EstadoMetaEnum])}'
+            }), 400
+    
+    # Filtramos solo los campos válidos del modelo
+    campos_permitidos = {
+        'meta_id', 'nombre', 'meta_resultado', 'descripcion_resultado',
+        'unidad_medida', 'estado', 'fecha_inicio', 'fecha_fin'
+    }
+    data_filtrada = {k: v for k, v in data.items() if k in campos_permitidos}
+    
+    try:
+        meta = Meta(**data_filtrada)
+        db.session.add(meta)
+        db.session.commit()
+        
+        return jsonify({
+            'mensaje': 'Meta creada exitosamente',
+            'meta': meta_to_dict(meta)
+        }), 201
+        
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': 'Error al crear la meta: ' + str(e)}), 500
 
 @metas_bp.route('/', methods=['GET'])
 def listar_metas():

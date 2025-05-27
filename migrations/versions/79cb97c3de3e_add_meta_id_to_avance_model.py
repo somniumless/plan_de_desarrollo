@@ -9,12 +9,12 @@ depends_on = None
 
 
 def upgrade():
-    op.add_column('Avance', sa.Column('meta_id', sa.String(length=20), nullable=True)) 
+    #op.add_column('Avance', sa.Column('meta_id', sa.String(length=20), nullable=True)) 
     op.create_foreign_key(op.f('fk_avance_meta_id'), 'Avance', 'Meta', ['meta_id'], ['meta_id'])
     # ### end Alembic commands ###
 
 
 def downgrade():
     op.drop_constraint(op.f('fk_avance_meta_id'), 'Avance', type_='foreignkey')
-    op.drop_column('Avance', 'meta_id')
+    #op.drop_column('Avance', 'meta_id')
     # ### end Alembic commands ###

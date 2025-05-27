@@ -33,7 +33,12 @@ class Meta(db.Model):
     )
     
     avances = db.relationship('Avance', backref='meta', lazy=True) 
-    indicadores = db.relationship('Indicador', secondary='Meta_Indicador', backref='metas')
+    indicadores = db.relationship(
+        'Indicador',
+        secondary='Meta_Indicador',
+        backref=db.backref('metas', overlaps="meta_indicadores,indicador"),
+        overlaps="meta_indicadores,indicador"
+    )
     entidades = db.relationship('EntidadResponsable', secondary='Meta_Entidad', backref='metas')
 
     def __repr__(self):

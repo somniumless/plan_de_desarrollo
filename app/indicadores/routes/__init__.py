@@ -5,5 +5,4 @@ from .indicador_routes import indicador_bp
 blueprints = [
     meta_indicador_bp, 
     indicador_bp
-
 ]
