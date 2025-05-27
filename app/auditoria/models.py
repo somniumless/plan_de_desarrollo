@@ -40,7 +40,6 @@ class Auditoria(db.Model):
             'id_entidad': self.id_entidad,
             'fecha_accion': self.fecha_accion.isoformat() if self.fecha_accion else None,
             'detalles': self.detalles,
-            'ip_origen': self.ip_origen,
             'user_agent': self.user_agent,
             'resultado': self.resultado.value 
         }

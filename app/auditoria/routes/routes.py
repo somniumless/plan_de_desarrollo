@@ -16,7 +16,6 @@ def auditoria_to_dict(auditoria):
         'id_entidad': auditoria.id_entidad,
         'fecha_accion': auditoria.fecha_accion.isoformat() if auditoria.fecha_accion else None,
         'detalles': auditoria.detalles,
-        'ip_origen': auditoria.ip_origen,
         'user_agent': auditoria.user_agent,
         'resultado': auditoria.resultado.value if auditoria.resultado else None
     }
