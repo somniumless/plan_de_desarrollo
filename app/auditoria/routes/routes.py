@@ -50,8 +50,7 @@ def crear_auditoria():
         accion = data['accion'],
         entidad_afectada = data['entidad_afectada'],
         id_entidad = data['id_entidad'],
-        detalles = data.get('detalles'),
-        ip_origen = request.remote_addr, 
+        detalles = data.get('detalles'), 
         user_agent = request.headers.get('User-Agent'), 
         resultado = resultado_enum
     )
@@ -90,8 +89,6 @@ def actualizar_auditoria(auditoria_id):
             auditoria.id_entidad = data['id_entidad']
         if 'detalles' in data:
             auditoria.detalles = data['detalles']
-        if 'ip_origen' in data:
-            auditoria.ip_origen = data['ip_origen']
         if 'user_agent' in data:
             auditoria.user_agent = data['user_agent']
         if 'resultado' in data:
