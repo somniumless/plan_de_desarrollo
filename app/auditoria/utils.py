@@ -18,7 +18,7 @@ def registrar_auditoria(
             if current_user and current_user.is_authenticated:
                 usuario_id = current_user.usuario_id
             else:
-                usuario_id = "ANONYMOUS"
+                usuario_id = None 
 
         ip_origen = request.remote_addr if request else None
         user_agent = request.headers.get('User-Agent') if request else None
