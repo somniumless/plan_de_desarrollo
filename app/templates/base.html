@@ -1,83 +1,52 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <title>{% block title %}Mi Aplicación{% endblock %}</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
-  <style>
-    body {
-      background-color: #f8f9fa;
-      font-family: Arial, sans-serif;
-    }
-
-    /* Navbar estilo gov.co (sin logos) */
-    .navbar-custom {
-      background-color: #3366cc;
-    }
-
-    .navbar-custom .navbar-brand,
-    .navbar-custom .nav-link,
-    .navbar-custom .navbar-text {
-      color: #ffffff;
-    }
-
-    .navbar-custom .nav-link:hover {
-      color: #7FDBFF;
-    }
-
-    .govco-shadow-box {
-      box-shadow: 50px 30px 0px -30px #e6effd, -50px 30px 0px -30px #e6effd,
-                  0px 20px 0px 0px #e6effd, 50px 50px 0px -30px #e6effd,
-                  -50px 50px 0px -30px #e6effd;
-      border: 2px solid #e5eefb;
-      border-radius: 10px;
-      padding: 1.5rem;
-      background-color: #fff;
-    }
-
-    .govco-text-header-1 {
-      color: #3366cc;
-      font-size: 20px;
-      font-weight: 600;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Alcaldía de Zipaquirá{% endblock %}</title> 
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/mintic_style.css') }}">
+    {% block head_extra %}{% endblock %} 
 </head>
 <body>
-  <nav class="navbar navbar-expand-lg navbar-custom">
-    <div class="container-fluid">
-      <span class="navbar-brand">Plan de Desarrollo</span>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMenu"
-              aria-controls="navbarMenu" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarMenu">
-        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-          <li class="nav-item">
-            <a class="nav-link" href="/documentos/lista">Gestión de documento y versiones</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/reportes/vista">Reportes</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/notificaciones/vista">Notificaciones</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/auditoria">Auditoría</a>
-          </li>
-        </ul>
-        <span class="navbar-text">
-          Hola, {{ current_user.nombre if current_user.is_authenticated else 'Invitado' }}
-        </span>
-      </div>
-    </div>
-  </nav>
+    <header class="govco-header">
+        <div class="govco-entity-bar">
+            <div class="govco-container">
+                <a href="/" class="govco-entity-logo">
+                    <img src="{{ url_for('static', filename='img/escudo_zipaquira.png') }}" alt="Escudo de Zipaquira">
+                    <span>Alcaldía Municipal de Zipaquirá</span>
+                </a>
+            </div>
+        </div>
+        <nav class="govco-main-nav">
+            <div class="govco-container">
+                <ul>
+                    <li><a href="/">Inicio</a></li>
+                    <li><a href="{{ url_for('main.plan_detalles') }}">Plan de Desarrollo</a></li>
 
-  <div class="container mt-4 govco-shadow-box">
-    {% block content %}
-    <!-- Aquí va el contenido específico de cada página -->
-    {% endblock %}
-  </div>
+                    {% if current_user.is_authenticated %}
+                        <li><a href="{{ url_for('main.dashboard') }}">Dashboard</a></li>
+                        <li><a href="{{ url_for('metas_bp.gestion_metas_page') }}">Gestión de Metas</a></li>
+                        <li><a href="{{ url_for('usuario_bp.logout') }}">Cerrar Sesión</a></li>
+                    {% else %}
+                        <li><a href="{{ url_for('usuario_bp.login') }}">Iniciar Sesión</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+        </nav>
+    </header>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <main>
+        {% block content %}{% endblock %} 
+    </main>
+
+    <footer class="govco-simple-footer">
+        <div class="govco-container">
+            <div class="govco-footer-content">
+                <img src="{{ url_for('static', filename='img/escudo_zipaquira.png') }}" alt="Escudo de Zipaquirá" class="govco-footer-logo">
+                <p>Alcaldía Municipal de Zipaquirá</p>
+            </div>
+        </div>
+    </footer>
+    {% block scripts_extra %}{% endblock %} 
 </body>
 </html>
