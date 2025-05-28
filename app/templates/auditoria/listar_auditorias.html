@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block title %}Listado de Auditorías{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Listado de Auditorías</h2>
+
+    {% if auditorias %}
+    <table class="table table-striped table-bordered">
+        <thead class="table-dark">
+            <tr>
+                <th>ID</th>
+                <th>Usuario ID</th>
+                <th>Acción</th>
+                <th>Entidad Afectada</th>
+                <th>ID Entidad</th>
+                <th>Fecha Acción</th>
+                <th>Detalles</th>
+                <th>User Agent</th>
+                <th>Resultado</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for audit in auditorias %}
+            <tr>
+                <td>{{ audit.auditoria_id }}</td>
+                <td>{{ audit.usuario_id }}</td>
+                <td>{{ audit.accion }}</td>
+                <td>{{ audit.entidad_afectada }}</td>
+                <td>{{ audit.id_entidad }}</td>
+                <td>{{ audit.fecha_accion.strftime('%Y-%m-%d %H:%M:%S') if audit.fecha_accion else '' }}</td>
+                <td>{{ audit.detalles }}</td>
+                <td>{{ audit.user_agent }}</td>
+                <td>{{ audit.resultado.value if audit.resultado else '' }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>No hay registros de auditoría disponibles.</p>
+    {% endif %}
+</div>
+{% endblock %}

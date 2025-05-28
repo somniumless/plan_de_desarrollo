@@ -8,6 +8,7 @@ from app.auditoria.utils import registrar_auditoria, ResultadoAccion
 from app.auditoria.decorators import audit_action
 from flask_login import current_user 
 from datetime import datetime
+from flask import render_template
 
 reportes_bp = Blueprint('reportes_bp', __name__, url_prefix='/reportes') 
 
@@ -24,6 +25,14 @@ def reporte_to_dict(r):
         'ubicacion_almacenamiento': r.ubicacion_almacenamiento,
         'estado': r.estado.value if r.estado else None
     }
+
+
+
+@reportes_bp.route('/vista')
+def vista_reportes():
+    return render_template('reportes/reportes.html')
+
+
 
 @reportes_bp.route('/', methods=['GET'])
 def listar_reportes():

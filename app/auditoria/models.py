@@ -7,6 +7,8 @@ import enum
 from datetime import datetime
 from sqlalchemy.dialects.mysql import JSON 
 
+
+
 class ResultadoAccion(enum.Enum):
     EXITO = "EXITO"
     FALLO = "FALLO"

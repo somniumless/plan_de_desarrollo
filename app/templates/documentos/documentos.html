@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}Lista de Documentos{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4">📁 Lista de Documentos</h2>
+
+    {% if documentos %}
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped">
+            <thead class="table-dark">
+                <tr>
+                    <th>Nombre</th>
+                    <th>Tipo</th>
+                    <th>Tamaño (MB)</th>
+                    <th>Fecha de Subida</th>
+                    <th>Ubicación</th>
+                    <th>Hash</th>
+                    <th>Eliminado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for doc in documentos %}
+                <tr>
+                    <td>{{ doc.nombre }}</td>
+                    <td>{{ doc.tipo }}</td>
+                    <td>{{ "%.2f"|format(doc.tamaño_mb or 0) }}</td>
+                    <td>{{ doc.fecha_subida }}</td>
+                    <td>{{ doc.ubicacion_almacenamiento }}</td>
+                    <td><code>{{ doc.hash_archivo }}</code></td>
+                    <td>{{ 'Sí' if doc.eliminado else 'No' }}</td>
+                    <td>
+                        <a href="{{ url_for('documento_bp.obtener_documento', id=doc.documento_id) }}" class="btn btn-sm btn-primary">Ver</a>
+                        <a href="{{ url_for('documento_bp.actualizar_documento', id=doc.documento_id) }}" class="btn btn-sm btn-warning">Editar</a>
+                        <form action="{{ url_for('documento_bp.eliminar_documento', id=doc.documento_id) }}" method="POST" style="display:inline;" onsubmit="return confirm('¿Estás seguro de que deseas eliminar este documento?');">
+                            <button type="submit" class="btn btn-sm btn-danger">Eliminar</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+        <div class="alert alert-info">No hay documentos disponibles.</div>
+    {% endif %}
+</div>
+{% endblock %}

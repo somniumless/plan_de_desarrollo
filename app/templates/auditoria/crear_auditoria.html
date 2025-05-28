@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block title %}Crear Auditoría{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h2 class="text-2xl font-bold mb-4 text-blue-900">Crear Auditoría</h2>
+
+  <!-- Mostrar mensajes flash -->
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+        <div class="alert alert-{{ category }}">{{ message }}</div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
+  <form method="POST" action="{{ url_for('auditoria_bp.crear_auditoria') }}">
+    <div class="mb-3">
+      <label for="accion" class="form-label">Acción</label>
+      <input type="text" class="form-control" id="accion" name="accion" required>
+    </div>
+
+    <div class="mb-3">
+      <label for="entidad_afectada" class="form-label">Entidad Afectada</label>
+      <input type="text" class="form-control" id="entidad_afectada" name="entidad_afectada" required>
+    </div>
+
+    <div class="mb-3">
+      <label for="id_entidad" class="form-label">ID de la Entidad</label>
+      <input type="text" class="form-control" id="id_entidad" name="id_entidad" required>
+    </div>
+
+    <div class="mb-3">
+      <label for="detalles" class="form-label">Detalles (opcional)</label>
+      <textarea class="form-control" id="detalles" name="detalles"></textarea>
+    </div>
+
+    <div class="mb-3">
+      <label for="resultado" class="form-label">Resultado</label>
+      <select class="form-select" id="resultado" name="resultado" required>
+        <option value="EXITO">Éxito</option>
+        <option value="FALLO">Fallo</option>
+      </select>
+    </div>
+
+    <!-- Si no usas current_user, puedes pedir el ID manual -->
+    <!--
+    <div class="mb-3">
+      <label for="usuario_id" class="form-label">ID de Usuario</label>
+      <input type="number" class="form-control" id="usuario_id" name="usuario_id">
+    </div>
+    -->
+
+    <button type="submit" class="btn btn-primary">Guardar Auditoría</button>
+  </form>
+</div>
+{% endblock %}

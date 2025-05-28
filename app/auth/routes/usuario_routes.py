@@ -229,8 +229,4 @@ def eliminar_usuario(usuario_id):
     usuario = Usuario.query.get_or_404(usuario_id)
     db.session.delete(usuario)
     db.session.commit()
-    return jsonify({'mensaje': 'Usuario eliminado exitosamente'})
-
-@usuario_bp.route('/')
-def usuarios():
-    return render_template('usuarios/usuarios.html')
+    return jsonify({'mensaje': 'Usuario eliminado exitosamente'}), 200
