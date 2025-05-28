@@ -53,6 +53,7 @@ def crear_avance():
 def avances():
     return render_template('avances/avances.html')
 
+
 @avances_bp.route('/<int:avance_id>', methods=['GET'])
 def obtener_avance(avance_id):
     avance = Avance.query.get_or_404(avance_id)

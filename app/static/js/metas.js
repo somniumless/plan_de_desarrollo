@@ -1,5 +1,5 @@
 // metas.js - Gestión completa de metas
-
+ 
 const API_URLS = {
     listarMetas: "/api/metas",
     crearMeta: "/api/metas/crear",
