@@ -20,7 +20,7 @@ class Documento(db.Model):
     usuario_id = db.Column(db.String(20), db.ForeignKey('usuario.usuario_id', ondelete='RESTRICT'), nullable=False) 
     nombre = db.Column(db.String(255), nullable=False)
     tipo = db.Column(db.Enum(TipoDocumento), nullable=False)
-    tamano_mb = db.Column(db.Numeric(10, 2), nullable=False)
+    tamaño_mb = db.Column(db.Numeric(10, 2), nullable=False)
     fecha_subida = db.Column(db.DateTime, server_default=db.func.current_timestamp())
     ubicacion_almacenamiento = db.Column(db.String(512))
     hash_archivo = db.Column(db.String(64))
