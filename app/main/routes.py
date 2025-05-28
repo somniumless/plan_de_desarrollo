@@ -29,9 +29,14 @@ def index_publico():
     ]
     return render_template('public/index.html', title='Plan de Desarrollo Municipal', plan_data=plan_de_desarrollo_data)
 
+@main_bp.route('/dashboard')
+def dashboard():
+    return render_template("dashboard.html")
+
 @main_bp.route('/el-plan-de-desarrollo')
 def plan_detalles():
     return render_template('public/plan_detalles.html', title='El Plan de Desarrollo Municipal')
+
 
 @main_bp.route('/ver_plan_completo')
 def serve_plan_completo_pdf():
