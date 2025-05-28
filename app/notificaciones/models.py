@@ -1,9 +1,10 @@
 # app/notificaciones/models.py
 
-from app import db
+from app import db 
 import enum
 from datetime import datetime
 from sqlalchemy.orm import relationship
+from sqlalchemy import ForeignKey 
 
 class TipoNotificacion(enum.Enum):
     SISTEMA = "SISTEMA"
@@ -24,10 +25,10 @@ class PrioridadNotificacion(enum.Enum):
     CRITICA = "CRITICA"
 
 class Notificacion(db.Model):
-    __tablename__ = 'Notificacion'
+    __tablename__ = 'notificacion' 
 
     notificacion_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    usuario_id = db.Column(db.String(20), db.ForeignKey('Usuario.usuario_id', ondelete='CASCADE'), nullable=False)
+    usuario_id = db.Column(db.String(20), db.ForeignKey('usuario.usuario_id', ondelete='CASCADE'), nullable=False)
     tipo = db.Column(db.Enum(TipoNotificacion), nullable=False)
     titulo = db.Column(db.String(100), nullable=False)
     mensaje = db.Column(db.Text, nullable=False)

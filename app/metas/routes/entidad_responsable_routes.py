@@ -1,13 +1,13 @@
 # app/metas/routes/entidad_responsable_routes.py
 
 from flask import Blueprint, request, jsonify
-from app import db 
-from app.metas.models import EntidadResponsable, TipoEntidad 
+from app import db
+from app.auth.models import EntidadResponsable, TipoEntidad
 from app.auditoria.utils import registrar_auditoria, ResultadoAccion
 from app.auditoria.decorators import audit_action
-from flask_login import current_user 
+from flask_login import current_user
 
-entidades_bp = Blueprint('entidades_bp', __name__, url_prefix='/entidades') 
+entidades_bp = Blueprint('entidades_bp', __name__, url_prefix='/entidades')
 
 def entidad_to_dict(entidad):
     return {
@@ -20,20 +20,20 @@ def entidad_to_dict(entidad):
 @audit_action(
     accion='CREAR_ENTIDAD_RESPONSABLE',
     entidad_afectada_name='EntidadResponsable',
-    include_args_in_details=['data'], 
-    obj_id_attr='entidad_id' 
+    include_args_in_details=['data'],
+    obj_id_attr='entidad_id'
 )
 def crear_entidad():
     data = request.get_json()
-    
+
     tipo_str = data.get('tipo_entidad')
     if not tipo_str:
         return jsonify({'error': 'El tipo de entidad es obligatorio.'}), 400
     try:
-        data['tipo_entidad'] = TipoEntidad[tipo_str.upper()] 
+        data['tipo_entidad'] = TipoEntidad[tipo_str.upper()]
     except KeyError:
         return jsonify({'error': f'Tipo de entidad inválido: {tipo_str}. Valores permitidos: {", ".join([e.value for e in TipoEntidad])}.'}), 400
-    
+
     entidad = EntidadResponsable(**data)
     db.session.add(entidad)
     db.session.commit()
@@ -53,8 +53,8 @@ def obtener_entidad(entidad_id):
 @audit_action(
     accion='ACTUALIZAR_ENTIDAD_RESPONSABLE',
     entidad_afectada_name='EntidadResponsable',
-    id_param_name='entidad_id', 
-    include_args_in_details=['data'] 
+    id_param_name='entidad_id',
+    include_args_in_details=['data']
 )
 def actualizar_entidad(entidad_id):
     entidad = EntidadResponsable.query.get_or_404(entidad_id)
@@ -62,7 +62,7 @@ def actualizar_entidad(entidad_id):
     for key, value in data.items():
         if key == 'tipo_entidad' and value:
             try:
-                setattr(entidad, key, TipoEntidad[value.upper()]) 
+                setattr(entidad, key, TipoEntidad[value.upper()])
             except KeyError:
                 return jsonify({'error': f'Tipo de entidad inválido para {key}: {value}. Valores permitidos: {", ".join([e.value for e in TipoEntidad])}.'}), 400
         else:
@@ -74,8 +74,8 @@ def actualizar_entidad(entidad_id):
 @audit_action(
     accion='ELIMINAR_ENTIDAD_RESPONSABLE',
     entidad_afectada_name='EntidadResponsable',
-    id_param_name='entidad_id', 
-    include_obj_attrs_in_details=['nombre', 'tipo_entidad'] 
+    id_param_name='entidad_id',
+    include_obj_attrs_in_details=['nombre', 'tipo_entidad']
 )
 def eliminar_entidad(entidad_id):
     entidad = EntidadResponsable.query.get_or_404(entidad_id)

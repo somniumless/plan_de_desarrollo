@@ -1,12 +1,15 @@
-from app import db, login_manager 
+# auth models.py
+
+from app.extensiones import db, login_manager 
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 import enum
 from sqlalchemy.dialects.mysql import TINYINT
-from datetime import datetime  
+from datetime import datetime
+from sqlalchemy.orm import relationship
 
 class Rol(db.Model):
-    __tablename__ = 'Rol'
+    __tablename__ = 'rol'
 
     rol_id = db.Column(db.String(20), primary_key=True)
     nombre = db.Column(db.String(50), nullable=False)
@@ -27,7 +30,7 @@ class NivelAcceso(enum.Enum):
     TOTAL = "TOTAL"
 
 class Permiso(db.Model):
-    __tablename__ = 'Permiso'
+    __tablename__ = 'permiso'
 
     permiso_id = db.Column(db.String(20), primary_key=True)
     nombre = db.Column(db.String(100), nullable=False, unique=True)
@@ -38,12 +41,11 @@ class Permiso(db.Model):
     def __repr__(self):
         return f"<Permiso {self.permiso_id} - {self.nombre}>"
 
-
 class RolPermiso(db.Model):
-    __tablename__ = 'Rol_Permiso'
+    __tablename__ = 'rol_permiso'
 
-    rol_id = db.Column(db.String(20), db.ForeignKey('Rol.rol_id', ondelete='CASCADE', onupdate='CASCADE'), primary_key=True)
-    permiso_id = db.Column(db.String(20), db.ForeignKey('Permiso.permiso_id', ondelete='CASCADE', onupdate='CASCADE'), primary_key=True)
+    rol_id = db.Column(db.String(20), db.ForeignKey('rol.rol_id', ondelete='CASCADE', onupdate='CASCADE'), primary_key=True)
+    permiso_id = db.Column(db.String(20), db.ForeignKey('permiso.permiso_id', ondelete='CASCADE', onupdate='CASCADE'), primary_key=True)
     fecha_asignacion = db.Column(db.DateTime, server_default=db.func.current_timestamp())
 
     rol = db.relationship('Rol', backref=db.backref('permisos_asignados', cascade='all, delete-orphan'))
@@ -52,12 +54,32 @@ class RolPermiso(db.Model):
     def __repr__(self):
         return f"<RolPermiso rol_id={self.rol_id}, permiso_id={self.permiso_id}>"
 
+class TipoEntidad(enum.Enum):
+    LIDER = "LIDER"
+    CORRESPONSABLE = "CORRESPONSABLE"
+
+class EntidadResponsable(db.Model):
+    __tablename__ = 'entidad_responsable'
+
+    entidad_id = db.Column(db.String(20), primary_key=True)
+    nombre = db.Column(db.String(100), nullable=False)
+    tipo_entidad = db.Column(db.Enum(TipoEntidad), nullable=False)
+
+    metas = db.relationship(
+        'Meta',
+        secondary='meta_entidad',
+        back_populates='entidades'
+    )
+    meta_entidades = db.relationship('MetaEntidad', back_populates='entidad', cascade='all, delete-orphan', overlaps="metas")
+
+    def __repr__(self):
+        return f"<EntidadResponsable {self.entidad_id} - {self.nombre}>"
 
 class Usuario(db.Model, UserMixin):
-    __tablename__ = 'Usuario'
+    __tablename__ = 'usuario'
 
     usuario_id = db.Column(db.String(20), primary_key=True)
-    rol_id = db.Column(db.String(20), db.ForeignKey('Rol.rol_id', onupdate='CASCADE'), nullable=False)
+    rol_id = db.Column(db.String(20), db.ForeignKey('rol.rol_id', onupdate='CASCADE'), nullable=False)
 
     nombre = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(100), nullable=False, unique=True)
@@ -65,10 +87,13 @@ class Usuario(db.Model, UserMixin):
 
     fecha_creacion = db.Column(db.DateTime, server_default=db.func.current_timestamp())
     ultimo_login = db.Column(db.DateTime)
-    activo = db.Column(db.Boolean, default=True) 
+    activo = db.Column(db.Boolean, default=True)
 
     intentos_fallidos = db.Column(TINYINT(unsigned=True), default=0)
     fecha_bloqueo = db.Column(db.DateTime)
+
+    secretaria_id = db.Column(db.String(20), db.ForeignKey('entidad_responsable.entidad_id', onupdate='CASCADE'), nullable=True)
+    secretaria = relationship('EntidadResponsable', backref='usuarios_asignados', primaryjoin="Usuario.secretaria_id == EntidadResponsable.entidad_id")
 
     rol = db.relationship('Rol', backref=db.backref('usuarios', lazy=True))
 
@@ -80,24 +105,20 @@ class Usuario(db.Model, UserMixin):
 
     @property
     def is_authenticated(self):
-        return True 
+        return True
 
     @property
     def is_active(self):
         if self.fecha_bloqueo and self.fecha_bloqueo > datetime.utcnow():
-            return False 
-        return self.activo 
+            return False
+        return self.activo
 
     @property
     def is_anonymous(self):
-        return False 
-    
+        return False
+
     def get_id(self):
         return str(self.usuario_id)
 
     def __repr__(self):
         return f"<Usuario {self.usuario_id} - {self.nombre}>"
-
-@login_manager.user_loader
-def load_user(user_id):
-    return Usuario.query.get(user_id)
