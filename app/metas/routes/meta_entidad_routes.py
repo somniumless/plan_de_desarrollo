@@ -1,5 +1,3 @@
-# app/metas/routes/meta_entidad_routes.py
-
 from flask import Blueprint, request, jsonify
 from app import db 
 from app.metas.models import MetaEntidad, Meta, EntidadResponsable 

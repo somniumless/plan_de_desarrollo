@@ -1,5 +1,3 @@
-# app/indicadores/routes/indicador_routes.py
-
 from flask import Blueprint, request, jsonify
 from app import db 
 from app.indicadores.models import Indicador, FrecuenciaCalculo 

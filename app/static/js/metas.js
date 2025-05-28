@@ -1,6 +1,4 @@
-// metas.js - Gestión completa de metas
- 
-const API_URLS = {
+ const API_URLS = {
     listarMetas: "/api/metas",
     crearMeta: "/api/metas/crear",
     obtenerMetaBase: "/api/metas/", 
@@ -27,7 +25,6 @@ function parseLocalDate(dateString) {
     const day = parseInt(parts[2], 10);
     return new Date(year, month, day);
 }
-
 
 document.addEventListener('DOMContentLoaded', function() {
     const tablaMetas = document.getElementById('tabla-metas');
@@ -171,7 +168,6 @@ document.addEventListener('DOMContentLoaded', function() {
             alert(`Error al procesar la solicitud: ${error.message}`);
         }
     }
-
     /**
      * Carga los datos de una meta para su edición en el formulario.
      * @param {string} id - El ID de la meta a editar.
@@ -183,7 +179,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 const errorText = await response.text();
                 throw new Error(`Error al cargar meta para edición: ${response.status} - ${errorText}`);
             }
-            
             const meta = await response.json();
             
             metaIdInput.value = meta.meta_id || ''; 
@@ -207,7 +202,6 @@ document.addEventListener('DOMContentLoaded', function() {
             alert(`Error al cargar la meta para edición: ${error.message}`);
         }
     }
-
     /**
      * Elimina una meta por su ID.
      * @param {string} id - El ID de la meta a eliminar.

@@ -1,5 +1,3 @@
-# app/reportes/models.py
-
 from app import db 
 import enum
 from datetime import datetime 

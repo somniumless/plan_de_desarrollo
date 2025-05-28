@@ -38,7 +38,6 @@ function guardarUsuario(e) {
     const usuario = { nombre, email, rol };
 
     if (id) {
-        // Editar usuario
         fetch(`http://localhost:5000/api/usuarios/${id}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
@@ -48,7 +47,6 @@ function guardarUsuario(e) {
             limpiarFormulario();
         });
     } else {
-        // Crear usuario
         fetch('http://localhost:5000/api/usuarios', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -59,7 +57,6 @@ function guardarUsuario(e) {
         });
     }
 }
-
 function editarUsuario(id, nombre, email, rol) {
     document.getElementById('usuario-id').value = id;
     document.getElementById('usuario-nombre').value = nombre;

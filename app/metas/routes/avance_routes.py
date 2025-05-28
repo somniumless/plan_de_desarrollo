@@ -1,5 +1,3 @@
-# app/metas/routes/avance_routes.py
-
 from flask import Blueprint, request, jsonify, render_template
 from datetime import datetime
 from app import db 
@@ -8,7 +6,6 @@ from app.auditoria.utils import registrar_auditoria, ResultadoAccion
 from app.auditoria.decorators import audit_action
 from flask_login import current_user 
 from app.auth.models import Usuario 
-
 
 avances_bp = Blueprint('avances_bp', __name__, url_prefix='/avances')
 

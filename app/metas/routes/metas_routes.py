@@ -1,5 +1,3 @@
-# app/metas/metas_routes.py
-
 from flask import Blueprint, request, jsonify, render_template, redirect, url_for, flash
 from app import db
 from app.metas.models import Meta, EstadoMetaEnum 
@@ -11,7 +9,6 @@ from datetime import datetime
 metas_bp = Blueprint('metas_bp', __name__, url_prefix='/api/metas', template_folder='../../templates')
 
 def meta_to_dict(meta):
-    """Convierte un objeto Meta a un diccionario para respuestas JSON."""
     return {
         'meta_id': meta.meta_id,
         'nombre': meta.nombre,
@@ -32,7 +29,6 @@ def gestion_metas_page():
                             title='Gestión Integral de Metas', 
                             EstadoMetaEnum=EstadoMetaEnum,
                             current_timestamp=datetime.utcnow().timestamp())
-
 
 @metas_bp.route('/crear', methods=['POST']) 
 @audit_action(
@@ -185,7 +181,6 @@ def actualizar_meta(meta_id):
         db.session.rollback()
         print(f"Error al actualizar la meta: {e}") 
         return jsonify({'error': 'Error al actualizar la meta: ' + str(e)}), 500
-
 
 @metas_bp.route('/<string:meta_id>', methods=['DELETE']) 
 @audit_action(

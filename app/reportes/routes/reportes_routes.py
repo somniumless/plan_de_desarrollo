@@ -1,5 +1,3 @@
-# app/reportes/routes/reportes_routes.py
-
 from flask import Blueprint, request, jsonify
 from app import db
 from app.reportes.models import Reporte, EstadoReporte
@@ -97,7 +95,6 @@ def crear_reporte():
         db.session.rollback()
         return jsonify({'error': str(e)}), 400
 
-
 @reportes_bp.route('/<int:reporte_id>', methods=['PUT'])
 @audit_action(
     accion='ACTUALIZAR_REPORTE',
@@ -146,7 +143,6 @@ def actualizar_reporte(reporte_id):
     except Exception as e:
         db.session.rollback()
         return jsonify({'error': str(e)}), 400
-
 
 @reportes_bp.route('/<int:reporte_id>', methods=['DELETE'])
 @audit_action(

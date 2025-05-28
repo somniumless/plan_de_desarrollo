@@ -8,8 +8,6 @@ from flask import render_template
 
 auditoria_bp = Blueprint('auditoria_bp', __name__, url_prefix='/auditoria') 
 
-
-
 def auditoria_to_dict(auditoria):
     return {
         'auditoria_id': auditoria.auditoria_id,
@@ -27,7 +25,6 @@ def auditoria_to_dict(auditoria):
 def nueva_auditoria():
     return render_template('auditoria/crear_auditoria.html')
 
-
 @auditoria_bp.route('/', methods=['POST'])
 @audit_action(
     accion='CREAR_REGISTRO_AUDITORIA',
@@ -36,7 +33,7 @@ def nueva_auditoria():
     obj_id_attr='auditoria_id'
 )
 def crear_auditoria():
-    data = request.form  # <-- si usas formulario HTML, usa form en vez de get_json
+    data = request.form  
 
     required_fields = ['accion', 'entidad_afectada', 'id_entidad', 'resultado']
     for field in required_fields:
@@ -51,7 +48,7 @@ def crear_auditoria():
         return redirect(url_for('auditoria_bp.listar_auditorias'))
 
     if 'usuario_id' not in data and current_user.is_authenticated:
-        data = data.copy()  # Flask's request.form is immutable
+        data = data.copy()  
         data['usuario_id'] = current_user.usuario_id
 
     auditoria = Auditoria(

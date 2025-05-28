@@ -1,4 +1,3 @@
-
 from .models import Indicador, MetaIndicador
 
 def init_indicadores(app):
@@ -6,4 +5,3 @@ def init_indicadores(app):
 
     for bp in blueprints:
         app.register_blueprint(bp)
-

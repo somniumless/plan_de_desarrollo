@@ -1,4 +1,3 @@
-# app/auditoria/models.py
 from app.extensiones import db 
 from sqlalchemy import Enum, BigInteger, ForeignKey
 from sqlalchemy.orm import relationship

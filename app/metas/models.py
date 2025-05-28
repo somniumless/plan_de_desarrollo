@@ -1,5 +1,3 @@
-# metas models.py
-
 from app.extensiones import db
 from datetime import datetime, timezone
 from sqlalchemy import Enum

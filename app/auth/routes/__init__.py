@@ -1,4 +1,3 @@
-# app/auth/routes/__init__.py
 from .usuario_routes import usuario_bp
 from .rol_routes import rol_bp
 from .permiso_routes import permiso_bp

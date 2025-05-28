@@ -1,4 +1,3 @@
-# app/__init__.py
 from flask import Flask
 from app.extensiones import db, login_manager, migrate
 from app.main import routes as main_routes

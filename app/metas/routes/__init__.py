@@ -1,5 +1,3 @@
-# app/metas/routes/__init__.py
-
 from .metas_routes import metas_bp 
 from .avance_routes import avances_bp
 from .entidad_responsable_routes import entidades_bp

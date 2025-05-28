@@ -1,4 +1,3 @@
-# app/auth/routes/usuario_routes.py
 from flask import Blueprint, request, jsonify, redirect, url_for, flash, render_template
 from flask_login import login_user, logout_user, login_required, current_user
 from app import db

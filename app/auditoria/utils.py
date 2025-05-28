@@ -1,4 +1,3 @@
-# app/auditoria/utils.py
 from app import db
 from app.auditoria.models import Auditoria, ResultadoAccion 
 from flask import request, current_app

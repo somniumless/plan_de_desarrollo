@@ -1,5 +1,3 @@
-# app/notificaciones/models.py
-
 from app import db 
 import enum
 from datetime import datetime
@@ -41,10 +39,6 @@ class Notificacion(db.Model):
     usuario = db.relationship('Usuario', backref=db.backref('notificaciones', lazy=True, cascade='all, delete-orphan'))
 
     def to_dict(self):
-        """
-        Convierte la instancia de Notificacion a un diccionario,
-        útil para serialización JSON.
-        """
         return {
             'notificacion_id': self.notificacion_id,
             'usuario_id': self.usuario_id,

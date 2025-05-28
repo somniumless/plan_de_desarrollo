@@ -1,8 +1,6 @@
-// static/avances/js/avances.js
 document.addEventListener('DOMContentLoaded', function() {
     console.log("avances.js cargado correctamente");
-    
-    // 1. Variables y estado de la aplicación
+ 
     let avances = JSON.parse(localStorage.getItem('avances')) || [
         {
             id: 1,
@@ -25,7 +23,6 @@ document.addEventListener('DOMContentLoaded', function() {
     let editando = false;
     let avanceEditandoId = null;
     
-    // 2. Elementos del DOM
     const elementos = {
         tablaAvances: document.getElementById('tabla-avances'),
         formAvance: document.getElementById('form-avance'),
@@ -40,20 +37,17 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     };
     
-    // 3. Inicialización
     function inicializar() {
         renderizarTabla();
         configurarEventListeners();
-        actualizarListaMetas(); // Para el select de metas (si lo implementas)
+        actualizarListaMetas(); 
     }
     
-    // 4. Configuración de event listeners
     function configurarEventListeners() {
         elementos.formAvance.addEventListener('submit', manejarGuardarAvance);
         elementos.btnCancelar.addEventListener('click', cancelarEdicion);
     }
     
-    // 5. Funciones principales
     function manejarGuardarAvance(e) {
         e.preventDefault();
         
@@ -114,7 +108,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    // 6. Funciones de renderizado
     function renderizarTabla() {
         const tbody = elementos.tablaAvances.querySelector('tbody');
         tbody.innerHTML = '';
@@ -146,7 +139,6 @@ document.addEventListener('DOMContentLoaded', function() {
             tbody.appendChild(fila);
         });
         
-        // Configurar eventos para los botones
         document.querySelectorAll('.editar').forEach(btn => {
             btn.addEventListener('click', () => cargarFormularioEdicion(
                 parseInt(btn.getAttribute('data-id'))
@@ -175,7 +167,6 @@ document.addEventListener('DOMContentLoaded', function() {
         elementos.formAvance.scrollIntoView({ behavior: 'smooth' });
     }
     
-    // 7. Funciones de utilidad
     function obtenerDatosFormulario() {
         return {
             metaId: parseInt(elementos.campos.metaId.value),
@@ -227,7 +218,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     function obtenerNombreMeta(metaId) {
-        // En una aplicación real, esto vendría de una API o base de datos
         const metas = {
             101: "Meta de Ventas Q1",
             102: "Implementación Software",
@@ -238,7 +228,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     function mostrarMensaje(texto, tipo) {
-        // Implementación simple - puedes mejorarla con un sistema de notificaciones
         console.log(`${tipo}: ${texto}`);
         alert(`${tipo.toUpperCase()}: ${texto}`);
     }
@@ -247,6 +236,5 @@ document.addEventListener('DOMContentLoaded', function() {
         localStorage.setItem('avances', JSON.stringify(avances));
     }
     
-    // 8. Inicializar la aplicación
     inicializar();
 });

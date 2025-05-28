@@ -1,5 +1,3 @@
-# documentos models.py
-
 from app.extensiones import db 
 import enum
 

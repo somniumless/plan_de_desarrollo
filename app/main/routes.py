@@ -1,4 +1,3 @@
-# app/main/routes.py
 from flask import render_template, redirect, url_for, Blueprint, current_app, send_from_directory
 from flask_login import login_required, current_user
 import os

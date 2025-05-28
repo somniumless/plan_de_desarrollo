@@ -1,4 +1,3 @@
-# app/static_files/routes.py
 from flask import Blueprint, current_app, send_from_directory
 import os
 

@@ -1,5 +1,3 @@
-# indicadores models.py
-
 from app.extensiones import db 
 import enum
 from sqlalchemy.orm import relationship 

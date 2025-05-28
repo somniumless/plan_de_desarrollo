@@ -1,5 +1,3 @@
-# app/notificaciones/routes/notificaciones_routes.py
-
 from flask import Blueprint, request, jsonify
 from app import db
 from app.notificaciones.models import Notificacion, TipoNotificacion, PrioridadNotificacion

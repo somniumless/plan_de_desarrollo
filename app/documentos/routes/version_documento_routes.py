@@ -1,5 +1,3 @@
-# app/documentos/routes/version_documento_routes.py
-
 from flask import Blueprint, request, jsonify
 from app import db
 from app.documentos.models import VersionDocumento
@@ -59,8 +57,6 @@ def obtener_versiones():
 def obtener_version(id):
     v = VersionDocumento.query.get_or_404(id) 
     return jsonify(version_documento_to_dict(v))
-
-
 
 @version_bp.route('/<int:id>', methods=['DELETE'])
 @audit_action(
