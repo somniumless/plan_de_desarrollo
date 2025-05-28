@@ -100,8 +100,6 @@ def actualizar_auditoria(auditoria_id):
             auditoria.id_entidad = data['id_entidad']
         if 'detalles' in data:
             auditoria.detalles = data['detalles']
-        if 'ip_origen' in data:
-            auditoria.ip_origen = data['ip_origen']
         if 'user_agent' in data:
             auditoria.user_agent = data['user_agent']
         if 'resultado' in data:
