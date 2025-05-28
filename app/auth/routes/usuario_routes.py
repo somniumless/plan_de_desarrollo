@@ -2,7 +2,7 @@
 from flask import Blueprint, request, jsonify, redirect, url_for, flash, render_template
 from flask_login import login_user, logout_user, login_required, current_user
 from app import db
-from app.auth.models import Usuario, Rol 
+from app.auth.models import Usuario, Rol
 from app.auditoria.utils import registrar_auditoria, ResultadoAccion
 from app.auditoria.decorators import audit_action
 from datetime import datetime, timedelta
@@ -14,7 +14,7 @@ usuario_bp = Blueprint('usuario_bp', __name__, template_folder='../../templates'
 def login():
     if current_user.is_authenticated:
         flash('Ya has iniciado sesión.', 'info')
-        return redirect(url_for('main.dashboard'))
+        return redirect(url_for('main.index_publico')) 
 
     if request.method == 'POST':
         email = request.form.get('email')
@@ -71,7 +71,6 @@ def login():
             )
             return redirect(url_for('usuario_bp.login'))
 
-
         if check_password_hash(usuario.password_hash, password):
             login_user(usuario, remember=remember_me)
             usuario.intentos_fallidos = 0
@@ -89,14 +88,14 @@ def login():
             )
 
             next_page = request.args.get('next')
-            if not next_page or not next_page.startswith('/'): 
-                next_page = url_for('main.dashboard') 
+            if not next_page or not next_page.startswith('/'):
+                next_page = url_for('main.index_publico') 
             return redirect(next_page)
 
-        else: 
+        else:
             usuario.intentos_fallidos = (usuario.intentos_fallidos or 0) + 1
-            if usuario.intentos_fallidos >= 5: 
-                usuario.fecha_bloqueo = datetime.utcnow() + timedelta(minutes=15) 
+            if usuario.intentos_fallidos >= 5:
+                usuario.fecha_bloqueo = datetime.utcnow() + timedelta(minutes=15)
                 flash("Su cuenta ha sido bloqueada debido a múltiples intentos fallidos. Contacte al administrador.", 'error')
                 registrar_auditoria(
                     accion='CUENTA_BLOQUEADA_POR_INTENTOS',
@@ -104,12 +103,12 @@ def login():
                     id_entidad=usuario.usuario_id,
                     detalles={'email': email, 'intentos_fallidos': usuario.intentos_fallidos, 'bloqueado_hasta': str(usuario.fecha_bloqueo)},
                     resultado=ResultadoAccion.ADVERTENCIA,
-                    usuario_id="ANONYMOUS" 
+                    usuario_id="ANONYMOUS"
                 )
             else:
                 flash("Credenciales inválidas.", 'error')
 
-            db.session.commit() 
+            db.session.commit()
 
             registrar_auditoria(
                 accion='INICIO_SESION_FALLIDO',
@@ -117,17 +116,17 @@ def login():
                 id_entidad=usuario.usuario_id,
                 detalles={'email_intentado': email, 'razon': 'contraseña incorrecta'},
                 resultado=ResultadoAccion.FALLO,
-                usuario_id="ANONYMOUS" 
+                usuario_id="ANONYMOUS"
             )
             return redirect(url_for('usuario_bp.login'))
 
     return render_template('auth/login.html')
 
 @usuario_bp.route('/logout', methods=['GET', 'POST'])
-@login_required 
+@login_required
 def logout():
     usuario_id = current_user.usuario_id
-    logout_user() 
+    logout_user()
 
     registrar_auditoria(
         accion='CIERRE_SESION',
@@ -137,17 +136,17 @@ def logout():
         usuario_id=usuario_id
     )
     flash('Has cerrado sesión correctamente.', 'success')
-    return redirect(url_for('usuario_bp.login')) 
+    return redirect(url_for('usuario_bp.login'))
 
 @usuario_bp.route('/register', methods=['GET', 'POST'])
 def register():
     if current_user.is_authenticated:
-        return redirect(url_for('main.dashboard'))
+        return redirect(url_for('main.index_publico')) 
 
     if request.method == 'POST':
         email = request.form.get('email')
         password = request.form.get('password')
-        nombre = request.form.get('nombre') 
+        nombre = request.form.get('nombre')
 
         if not email or not password or not nombre:
             flash('Todos los campos son obligatorios para el registro.', 'error')
@@ -160,12 +159,12 @@ def register():
         try:
             hashed_password = generate_password_hash(password)
             nuevo_usuario = Usuario(
-                usuario_id=email, 
+                usuario_id=email,
                 nombre=nombre,
                 email=email,
                 password_hash=hashed_password,
                 activo=True,
-                rol_id='USUARIO_NORMAL',  
+                rol_id='USUARIO_NORMAL',
             )
             db.session.add(nuevo_usuario)
             db.session.commit()
@@ -184,7 +183,7 @@ def forgot_password():
         email = request.form.get('email')
         flash('Si su correo electrónico está en nuestro sistema, recibirá un enlace para restablecer su contraseña.', 'info')
         return redirect(url_for('usuario_bp.login'))
-    
+
     return render_template('auth/forgot_password.html')
 
 @usuario_bp.route('/usuarios', methods=['POST'])
@@ -206,7 +205,7 @@ def crear_usuario():
         return jsonify({'error': 'El campo "secretaria_id" es requerido'}), 400
 
     data['password_hash'] = generate_password_hash(data['password'])
-    del data['password'] 
+    del data['password']
 
     try:
         nuevo_usuario = Usuario(**data)

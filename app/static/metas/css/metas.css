@@ -1,19 +1,29 @@
 @charset "UTF-8";
 
-/* Importar las fuentes definidas en all.css */
+/* ==================================================================================== */
+/* Estas declaraciones @font-face deben ser ELIMINADAS si usas Google Fonts externos. */
+/* No deben estar presentes en este archivo CSS si la fuente se carga desde el HTML. */
+/*
 @font-face {
     font-family: 'Montserrat-Regular';
-    src: url('../assets/fonts/Montserrat/Montserrat-Regular.ttf');
+    src: url('../../assets/fonts/Montserrat/Montserrat-Regular.ttf');
 }
 
 @font-face {
     font-family: 'WorkSans-SemiBold';
-    src: url('../assets/fonts/Work_Sans/static/WorkSans-SemiBold.ttf');
+    src: url('../../assets/fonts/Work_Sans/static/WorkSans-SemiBold.ttf');
 }
+*/
+/* ==================================================================================== */
+
+/* El bloque @font-face para 'govco-fontv2' también debe estar eliminado/comentado */
+/* @font-face { ... govco-fontv2 ... } */
+
 
 /* Estilos generales */
 body {
-    font-family: 'Montserrat-Regular', sans-serif;
+    /* CAMBIO IMPORTANTE: Usar 'Montserrat' sin '-Regular' */
+    font-family: 'Montserrat', sans-serif;
     line-height: 1.6;
     margin: 0;
     padding: 20px;
@@ -30,7 +40,8 @@ header {
 }
 
 h1, h2 {
-    font-family: 'WorkSans-SemiBold', sans-serif;
+    /* CAMBIO IMPORTANTE: Usar 'Work Sans' sin '-SemiBold' */
+    font-family: 'Work Sans', sans-serif;
     margin-top: 0;
 }
 
@@ -64,7 +75,8 @@ th, td {
 th {
     background-color: #3498db;
     color: white;
-    font-family: 'WorkSans-SemiBold', sans-serif;
+    /* CAMBIO IMPORTANTE: Usar 'Work Sans' */
+    font-family: 'Work Sans', sans-serif;
 }
 
 tr:hover {
@@ -100,7 +112,8 @@ form {
 label {
     display: block;
     margin-bottom: 15px;
-    font-family: 'WorkSans-SemiBold', sans-serif;
+    /* CAMBIO IMPORTANTE: Usar 'Work Sans' */
+    font-family: 'Work Sans', sans-serif;
 }
 
 input[type="text"],
@@ -109,7 +122,8 @@ select {
     padding: 10px;
     border: 1px solid #ddd;
     border-radius: 4px;
-    font-family: 'Montserrat-Regular', sans-serif;
+    /* CAMBIO IMPORTANTE: Usar 'Montserrat' */
+    font-family: 'Montserrat', sans-serif;
     margin-top: 5px;
     box-sizing: border-box;
 }
@@ -121,7 +135,8 @@ button {
     padding: 10px 15px;
     border-radius: 4px;
     cursor: pointer;
-    font-family: 'WorkSans-SemiBold', sans-serif;
+    /* CAMBIO IMPORTANTE: Usar 'Work Sans' */
+    font-family: 'Work Sans', sans-serif;
     margin-right: 10px;
 }
 
@@ -137,35 +152,11 @@ button:hover {
     background-color: #c0392b;
 }
 
-/* Iconos de acciones (usando govco-fontv2) */
-[class^="govco-"]:before, 
-[class*=" govco-"]:before {
-    font-family: "govco-fontv2";
-    font-style: normal;
-    font-weight: normal;
-    display: inline-block;
-    text-decoration: inherit;
-    width: 1em;
-    margin-right: .2em;
-    text-align: center;
-    font-variant: normal;
-    text-transform: none;
-    line-height: 1em;
-    margin-left: .2em;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-}
+/* Los bloques para iconos (govco-fontv2) deben seguir eliminados o comentados */
+/* [class^="govco-"]:before, ... */
+/* .govco-target:before, ... */
 
-/* Clases para iconos específicos para metas */
-.govco-target:before { content: '\e874'; } /* Icono de meta/objetivo */
-.govco-list-alt:before { content: '\ea16'; } /* Icono de lista */
-.govco-edit:before { content: '\e91f'; } /* Icono de editar */
-.govco-trash-alt:before { content: '\eb89'; } /* Icono de eliminar */
-.govco-check-circle:before { content: '\e8a4'; } /* Icono de completado */
-.govco-save:before { content: '\ead8'; } /* Icono de guardar */
-.govco-cancel:before { content: '\e8ed'; } /* Icono de cancelar */
-
-/* Estilos para botones con iconos */
+/* Estilos para botones con iconos (si aún los usas, aunque no haya iconos visibles) */
 .btn-icon {
     display: inline-flex;
     align-items: center;
@@ -183,7 +174,7 @@ button:hover {
         display: block;
         overflow-x: auto;
     }
-    
+
     form {
         padding: 15px;
     }

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Metas</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='metas/css/metas.css') }}">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <script>
+    const API_URLS = {
+        listarMetas: "{{ url_for('metas_bp.listar_metas') }}",
+        crearMeta: "{{ url_for('metas_bp.crear_meta_api') }}",
+        obtenerMetaBase: "{{ url_for('metas_bp.obtener_meta', meta_id='TEMP_ID') }}".replace('TEMP_ID', ''),
+        actualizarMetaBase: "{{ url_for('metas_bp.actualizar_meta', meta_id='TEMP_ID') }}".replace('TEMP_ID', ''),
+        eliminarMetaBase: "{{ url_for('metas_bp.eliminar_meta', meta_id='TEMP_ID') }}".replace('TEMP_ID', '')
+    };
+    const ESTADO_META_VALUES = [
+        {{ EstadoMetaEnum | map(attribute='value') | map('tojson') | join(', ') | safe }}
+    ];
+    </script>
+    <script src="{{ url_for('static', filename='metas/js/metas.js', v='1.2.3') }}" defer></script>defer></script>
+</head>
+<body>
+    <header>
+        <h1>Gestión de Metas</h1>
+    </header>
+    <main>
+        <section>
+            <h2>Lista de Metas</h2>
+            <table id="tabla-metas">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Resultado Esperado</th>
+                        <th>Descripción Resultado</th>
+                        <th>Unidad de Medida</th>
+                        <th>Estado</th>
+                        <th>Fecha Inicio</th>
+                        <th>Fecha Fin</th>
+                        <th>Fecha Registro</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </section>
+        <section>
+            <h2>Crear/Editar Meta</h2>
+            <form id="form-meta">
+                <label>ID Meta: <input type="text" id="meta-id" required></label>
+                <label>Nombre: <input type="text" id="meta-nombre" required></label>
+                <label>Resultado Esperado: <input type="text" id="meta-resultado" required></label>
+                <label>Descripción del Resultado: <input type="text" id="meta-descripcion" required></label>
+                <label>Unidad de Medida: <input type="text" id="meta-unidad" required></label>
+                <label>Fecha de Inicio: <input type="date" id="meta-fecha-inicio" required></label>
+                <label>Fecha de Fin: <input type="date" id="meta-fecha-fin" required></label>
+
+                <label>Estado:
+                    <select id="meta-estado" required>
+                        {% for estado in EstadoMetaEnum %}
+                        <option value="{{ estado.value }}">{{ estado.value }}</option>
+                        {% endfor %}
+                    </select>
+                </label>
+                <button type="submit"> Guardar</button>
+                <button type="button" id="cancelar-edicion" style="display:none;">
+                    Cancelar
+                </button>
+            </form>
+        </section>
+    </main>
+</body>
+</html>

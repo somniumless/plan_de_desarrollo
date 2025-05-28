@@ -1,13 +1,10 @@
-# auditoria models.py
-
+# app/auditoria/models.py
 from app.extensiones import db 
 from sqlalchemy import Enum, BigInteger, ForeignKey
 from sqlalchemy.orm import relationship
 import enum
 from datetime import datetime
 from sqlalchemy.dialects.mysql import JSON 
-
-
 
 class ResultadoAccion(enum.Enum):
     EXITO = "EXITO"
@@ -20,7 +17,7 @@ class Auditoria(db.Model):
     auditoria_id = db.Column(BigInteger, primary_key=True, autoincrement=True)
 
     usuario_id = db.Column(db.String(20), db.ForeignKey('usuario.usuario_id', ondelete='SET NULL'), nullable=True) 
-    
+
     accion = db.Column(db.String(50), nullable=False)
     entidad_afectada = db.Column(db.String(50), nullable=False)
 
@@ -29,6 +26,7 @@ class Auditoria(db.Model):
     detalles = db.Column(JSON, nullable=True) 
     user_agent = db.Column(db.String(255), nullable=True)
     resultado = db.Column(db.Enum(ResultadoAccion), nullable=False)
+    ip_origen = db.Column(db.String(45), nullable=True) 
 
     usuario = relationship('Usuario', backref='registros_auditoria') 
 
@@ -45,5 +43,6 @@ class Auditoria(db.Model):
             'fecha_accion': self.fecha_accion.isoformat() if self.fecha_accion else None,
             'detalles': self.detalles,
             'user_agent': self.user_agent,
-            'resultado': self.resultado.value 
+            'resultado': self.resultado.value,
+            'ip_origen': self.ip_origen 
         }

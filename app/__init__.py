@@ -1,13 +1,13 @@
 # app/__init__.py
-
 from flask import Flask
-from app.extensiones import db, login_manager, migrate 
-from app.main.__init__ import main_bp 
-from app.auth.routes.usuario_routes import usuario_bp 
+from app.extensiones import db, login_manager, migrate
+from app.main import routes as main_routes
+from app.auth.routes.usuario_routes import usuario_bp
+from flask_cors import CORS 
 
 def create_app():
     app = Flask(__name__)
-    app.config['SECRET_KEY'] = 'clave-secreta-123' 
+    app.config['SECRET_KEY'] = 'clave-secreta-123'
     app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:@localhost/proyecto_zipaquira'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
@@ -15,15 +15,17 @@ def create_app():
     login_manager.init_app(app)
     login_manager.login_view = 'usuario_bp.login'
     login_manager.login_message = "Por favor, inicia sesión para acceder a esta página."
-    login_manager.login_message_category = "info" 
+    login_manager.login_message_category = "info"
     migrate.init_app(app, db)
+
+    CORS(app) 
 
     from app.auth.models import Usuario
     @login_manager.user_loader
     def load_user(user_id):
-        return Usuario.query.get(str(user_id)) 
+        return Usuario.query.get(str(user_id))
 
-    app.register_blueprint(main_bp)
+    app.register_blueprint(main_routes.main_bp)
     app.register_blueprint(usuario_bp)
 
     with app.app_context():

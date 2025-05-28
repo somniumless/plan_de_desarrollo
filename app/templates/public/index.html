@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/mintic_style.css') }}">
+</head>
+<body>
+    <header class="govco-header">
+        <div class="govco-entity-bar">
+            <div class="govco-container">
+                <a href="/" class="govco-entity-logo">
+                    <img src="{{ url_for('static', filename='img/escudo_zipaquira.png') }}" alt="Escudo de Zipaquira">
+                    <span>Alcaldía Municipal de Zipaquirá</span>
+                </a>
+            </div>
+        </div>
+        <nav class="govco-main-nav">
+            <div class="govco-container">
+                <ul>
+                    <li><a href="/">Inicio</a></li>
+                    {% if current_user.is_authenticated %}
+                        <li><a href="{{ url_for('metas_bp.gestion_metas_page') }}">Gestión de Metas</a></li>
+                        <li><a href="{{ url_for('usuario_bp.logout') }}">Cerrar Sesión</a></li>
+                    {% else %}
+                        <li><a href="{{ url_for('usuario_bp.login') }}">Iniciar Sesión</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+        </nav>
+    </header>
+    
+    <main>
+        <section class="govco-hero-banner">
+            <div class="govco-container">
+                <img src="{{ url_for('static', filename='img/alcaldia.png') }}" alt="Alcaldía de Zipaquirá - Plan de Desarrollo" class="govco-banner-image">
+                <div class="govco-banner-content">
+                    <h1>Plan de Desarrollo Municipal 2024-2027</h1>
+                    <p>ZlPAQUlRÁ CREE, PROTEGE Y AVANZA.</p>
+                </div>
+            </div>
+        </section>
+        <section class="govco-section govco-container">
+            <h2>Metas Clave del Plan de Desarrollo</h2>
+            {% if plan_data %}
+                <div class="govco-goals-grid">
+                    {% for meta in plan_data %}
+                        <div class="govco-goal-card">
+                            <h3>Meta: {{ meta.nombre_display }}</h3>
+                            <p><strong>Estado:</strong> <span class="status-{{ meta.estado | lower | replace(' ', '-') }}">{{ meta.estado }}</span></p>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: {{ meta.progreso }};"></div>
+                                <span class="progress-text">{{ meta.progreso }}</span>
+                            </div>
+                            <p class="meta-secretary">{{ meta.secretaria }}</p>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="govco-info-message">
+                    <p>No hay datos del plan de desarrollo disponibles en este momento.</p>
+                </div>
+            {% endif %}
+        </section>
+
+        <section class="govco-section govco-container govco-call-to-action">
+            <h2>¿Quieres saber más?</h2>
+            <p>Explora los detalles completos de nuestro Plan.</p>
+            <a href="#" class="govco-button govco-button-primary">Ver Plan Completo</a>
+        </section>
+    </main>
+
+    <section class="govco-contact-info-section">
+        <div class="govco-container">
+            <div class="govco-contact-grid">
+                <div class="govco-contact-item">
+                    <h3>Alcaldía Municipal de Zipaquirá</h3>
+                    <p><strong>Dirección:</strong> CASA DE GOBIERNO: Calle 5 No 7 - 70. Barrio Centro // PALACIO MUNICIPAL: Carrera 7 No 4 - 11. Frente a la Plaza de Los Comuneros. Código Postal: 250262</p>
+                    <p><strong>Horario de atención:</strong> Lunes a jueves de 7:00 a.m. a 12:30 p.m. y de 1:30 p.m. a 5:00 p.m. Los viernes de 7:00 a.m. a 12:00 p.m. y de 1:00 p.m. a 4:30 p.m.</p>
+                    <p><strong>Teléfono Conmutador:</strong> (601) 844 5064</p>
+                    <p><strong>Línea de atención gratuita:</strong> (601) 888 2415</p>
+                    <p><strong>Correo institucional:</strong> alcaldia@zipaquira-cundinamarca.gov.co</p>
+                    <p><strong>Correo de notificaciones judiciales:</strong> oficinaasesorjuridica@zipaquira-cundinamarca.gov.co</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <footer class="govco-simple-footer">
+        <div class="govco-container">
+            <div class="govco-footer-content">
+                <img src="{{ url_for('static', filename='img/escudo_zipaquira.png') }}" alt="Escudo de Zipaquirá" class="govco-footer-logo">
+                <p>Alcaldía Municipal de Zipaquirá</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
