@@ -1,13 +1,12 @@
 # metas models.py
 
-from app.extensiones import db 
+from app.extensiones import db
 from datetime import datetime
-from sqlalchemy import Enum 
-import enum 
+from sqlalchemy import Enum
+import enum
 from sqlalchemy.orm import relationship
 from sqlalchemy import CheckConstraint, ForeignKey
-from app.auth.models import EntidadResponsable, TipoEntidad, Usuario 
-
+from app.auth.models import EntidadResponsable, Usuario
 
 class EstadoMetaEnum(enum.Enum):
     PLANIFICADA = "PLANIFICADA"
@@ -16,16 +15,16 @@ class EstadoMetaEnum(enum.Enum):
     CANCELADA = "CANCELADA"
 
 class Meta(db.Model):
-    __tablename__ = 'meta' 
-    
+    __tablename__ = 'meta'
+
     meta_id = db.Column(db.String(20), primary_key=True)
     nombre = db.Column(db.String(100), nullable=False)
     meta_resultado = db.Column(db.Text)
     descripcion_resultado = db.Column(db.Text)
     unidad_medida = db.Column(db.String(50))
     estado = db.Column(
-        db.Enum(EstadoMetaEnum), 
-        default=EstadoMetaEnum.PLANIFICADA, 
+        db.Enum(EstadoMetaEnum),
+        default=EstadoMetaEnum.PLANIFICADA,
         nullable=False
     )
     fecha_inicio = db.Column(db.Date)
@@ -35,40 +34,47 @@ class Meta(db.Model):
         server_default=db.func.current_timestamp(),
         nullable=False
     )
-    
-    avances = db.relationship('Avance', backref='meta', lazy=True) 
-    
+
+    avances = db.relationship('Avance', backref='meta', lazy=True)
+
     indicadores = db.relationship(
         'Indicador',
-        secondary='meta_indicador', 
+        secondary='meta_indicador',
         backref=db.backref('metas', overlaps="meta_indicadores,indicador"),
         overlaps="meta_indicadores,indicador"
     )
 
-    entidades = db.relationship('EntidadResponsable', secondary='meta_entidad', backref='metas') 
+    meta_entidades = db.relationship('MetaEntidad', back_populates='meta', cascade='all, delete-orphan', overlaps="metas")
+
+    entidades = db.relationship(
+        'EntidadResponsable',
+        secondary='meta_entidad',
+        back_populates='metas',
+        overlaps="meta_entidades"
+    )
 
     def __repr__(self):
         return f'<Meta {self.meta_id}: {self.nombre}>'
 
 class MetaEntidad(db.Model):
-    __tablename__ = 'meta_entidad' 
-    
+    __tablename__ = 'meta_entidad'
+
     meta_id = db.Column(
         db.String(20),
-        db.ForeignKey('meta.meta_id', ondelete='CASCADE'), 
+        db.ForeignKey('meta.meta_id', ondelete='CASCADE'),
         primary_key=True,
         nullable=False
     )
-    
+
     entidad_id = db.Column(
         db.String(20),
-        db.ForeignKey('entidad_responsable.entidad_id', ondelete='CASCADE'), 
+        db.ForeignKey('entidad_responsable.entidad_id', ondelete='CASCADE'),
         primary_key=True,
         nullable=False
     )
-    
-    meta = db.relationship('Meta', backref=db.backref('meta_entidades', cascade='all, delete'))
-    entidad = db.relationship('EntidadResponsable', backref=db.backref('meta_entidades', cascade='all, delete'))
+
+    meta = db.relationship('Meta', back_populates='meta_entidades', overlaps="entidades,metas")
+    entidad = db.relationship('EntidadResponsable', back_populates='meta_entidades', overlaps="entidades,metas")
 
     def __repr__(self):
         return f'<MetaEntidad meta_id={self.meta_id} entidad_id={self.entidad_id}>'
@@ -77,8 +83,8 @@ class Avance(db.Model):
     __tablename__ = 'avance'
 
     avance_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    meta_id = db.Column(db.String(20), db.ForeignKey('meta.meta_id'), nullable=False) 
-    
+    meta_id = db.Column(db.String(20), db.ForeignKey('meta.meta_id'), nullable=False)
+
     titulo = db.Column(db.String(100), nullable=False)
     descripcion = db.Column(db.Text, nullable=False)
     fecha_registro = db.Column(db.DateTime, server_default=db.func.current_timestamp())
