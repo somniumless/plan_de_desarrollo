@@ -2,17 +2,18 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestión de Usuarios</title>
     <link rel="stylesheet" href="css/usuarios.css">
-    <link rel="stylesheet" href="css/all.css">
+    <link rel="stylesheet" href="css/all.css"> <!-- Asegúrate de incluir el CSS de iconos -->
 </head>
 <body>
     <header>
-        <h1>Gestión de Usuarios</h1>
+        <h1><i class="govco-user"></i> Gestión de Usuarios</h1>
     </header>
     <main>
         <section>
-            <h2>Lista de Usuarios</h2>
+            <h2><i class="govco-list"></i> Lista de Usuarios</h2>
             <table id="tabla-usuarios">
                 <thead>
                     <tr>
@@ -24,19 +25,31 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- Usuarios se cargan aca -->
+                    <!-- Ejemplo de fila con iconos -->
+                    <tr>
+                        <td>1</td>
+                        <td>Juan Pérez</td>
+                        <td>juan@example.com</td>
+                        <td>Administrador</td>
+                        <td>
+                            <button class="btn-icon"><i class="govco-edit"></i> Editar</button>
+                            <button class="btn-icon"><i class="govco-trash-alt"></i> Eliminar</button>
+                        </td>
+                    </tr>
                 </tbody>
             </table>
         </section>
         <section>
-            <h2>Crear/Editar Usuario</h2>
+            <h2><i class="govco-user-edit"></i> Crear/Editar Usuario</h2>
             <form id="form-usuario">
                 <input type="hidden" id="usuario-id">
                 <label>Nombre: <input type="text" id="usuario-nombre" required></label>
                 <label>Email: <input type="email" id="usuario-email" required></label>
                 <label>Rol: <input type="text" id="usuario-rol" required></label>
-                <button type="submit">Guardar</button>
-                <button type="button" id="cancelar-edicion" style="display:none;">Cancelar</button>
+                <button type="submit"><i class="govco-save"></i> Guardar</button>
+                <button type="button" id="cancelar-edicion" style="display:none;">
+                    <i class="govco-cancel"></i> Cancelar
+                </button>
             </form>
         </section>
     </main>

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Metas</title>
+    <link rel="stylesheet" href="css/metas.css">
+    <link rel="stylesheet" href="css/all.css"> <!-- Asegúrate de incluir el CSS de iconos -->
+</head>
+<body>
+    <header>
+        <h1><i class="govco-target"></i> Gestión de Metas</h1>
+    </header>
+    <main>
+        <section>
+            <h2><i class="govco-list-alt"></i> Lista de Metas</h2>
+            <table id="tabla-metas">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Descripción</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Ejemplo de fila con iconos -->
+                    <tr>
+                        <td>1</td>
+                        <td>Meta de ventas</td>
+                        <td>Alcanzar $100,000 en ventas este trimestre</td>
+                        <td class="estado-progreso">En Progreso</td>
+                        <td>
+                            <button class="btn-icon"><i class="govco-edit"></i> Editar</button>
+                            <button class="btn-icon"><i class="govco-trash-alt"></i> Eliminar</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>Certificación equipo</td>
+                        <td>Certificar a todo el equipo en nuevo software</td>
+                        <td class="estado-completada"><i class="govco-check-circle"></i> Completada</td>
+                        <td>
+                            <button class="btn-icon"><i class="govco-edit"></i> Editar</button>
+                            <button class="btn-icon"><i class="govco-trash-alt"></i> Eliminar</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+        <section>
+            <h2><i class="govco-edit"></i> Crear/Editar Meta</h2>
+            <form id="form-meta">
+                <input type="hidden" id="meta-id">
+                <label>Nombre: <input type="text" id="meta-nombre" required></label>
+                <label>Descripción: <input type="text" id="meta-descripcion" required></label>
+                <label>Estado: 
+                    <select id="meta-estado" required>
+                        <option value="Pendiente">Pendiente</option>
+                        <option value="En Progreso">En Progreso</option>
+                        <option value="Completada">Completada</option>
+                    </select>
+                </label>
+                <button type="submit"><i class="govco-save"></i> Guardar</button>
+                <button type="button" id="cancelar-edicion" style="display:none;">
+                    <i class="govco-cancel"></i> Cancelar
+                </button>
+            </form>
+        </section>
+    </main>
+    <script src="js/metas.js"></script>
+</body>
+</html>
