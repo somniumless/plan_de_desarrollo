@@ -23,7 +23,7 @@
                     <li><a href="{{ url_for('main.plan_detalles') }}">Plan de Desarrollo</a></li>
                     <li><a href="{{ url_for('main.preguntas_frecuentes') }}">Preguntas Frecuentes</a></li>
                     <li><a href="{{ url_for('main.contacto') }}">Contacto</a></li>
-                    
+
                     {% if current_user.is_authenticated %}
                         <li><a href="{{ url_for('metas_bp.gestion_metas_page') }}">Gestión de Metas</a></li>
                         <li><a href="{{ url_for('usuario_bp.logout') }}">Cerrar Sesión</a></li>
@@ -34,16 +34,16 @@
             </div>
         </nav>
     </header>
-    
+
     <main>
         <section class="govco-section govco-container" id="plan-info-detalles">
-            <h2 class="text-center mb-4">Plan de Desarrollo Municipal 2024-2027: ZlPAQUlRÁ CREE, PROTEGE Y AVANZA</h2>
-            
+            <h2 class="text-center mb-4">Plan de Desarrollo Municipal 2024-2028: ZlPAQUlRÁ CREE, PROTEGE Y AVANZA</h2>
+
             <div class="govco-row">
                 <div class="govco-col-md-8">
                     <div class="govco-card govco-card-primary">
                         <h3>Resumen General del Plan</h3>
-                        <p>El Plan de Desarrollo del municipio de Zipaquirá (Cundinamarca) para el periodo 2024-2027, titulado <strong>"ZlPAQUlRÁ CREE, PROTEGE Y AVANZA"</strong>, es la hoja de ruta estratégica adoptada mediante el <strong>Acuerdo 02 del 12 de Junio de 2024</strong>.</p>
+                        <p>El Plan de Desarrollo del municipio de Zipaquirá (Cundinamarca) para el periodo 2024-2028, titulado <strong>"ZlPAQUlRÁ CREE, PROTEGE Y AVANZA"</strong>, es la hoja de ruta estratégica adoptada mediante el <strong>Acuerdo 02 del 12 de Junio de 2024</strong>.</p>
                         <p>Su misión es implementar un modelo de gobernanza que recupere la confianza y la credibilidad del ciudadano en el potencial del municipio, mejorando el desarrollo económico, social y ambiental de sus habitantes. Esto se logrará a través de la consolidación de áreas clave como:</p>
                         <ul class="govco-list-bullet">
                             <li>Seguridad</li>
@@ -71,39 +71,31 @@
                             <li><strong>Tipo de Recurso:</strong> Documento</li>
                             <li><strong>Formato:</strong> PDF</li>
                             <li><strong>Autor:</strong> Alcaldía de Zipaquirá (Cundinamarca)</li>
-                            <li><strong>Fuente:</strong> Alcaldía de Zipaquirá. Plan de Desarrollo del municipio de Zipaquirá - Cundinamarca “ZlPAQUlRÁ CREE, PROTEGE Y AVANZA” para el periodo 2024 - 2027.</li>
+                            <li><strong>Fuente:</strong> Alcaldía de Zipaquirá. Plan de Desarrollo del municipio de Zipaquirá - Cundinamarca “ZlPAQUlRÁ CREE, PROTEGE Y AVANZA” para el periodo 2024 - 2028.</li>
                         </ul>
-                        
+
                         <h4 class="mt-4">Documentos para Descargar:</h4>
                         <ul class="govco-list-bullet">
                             <li>
-                                <a href="{{ url_for('main.serve_plan_completo_pdf') }}" 
+                                <a href="{{ url_for('main.serve_plan_completo_pdf') }}"
                                    class="govco-link" target="_blank" rel="noopener noreferrer">
                                    Plan de Desarrollo (Documento Principal)
-                                </a> <span class="text-small text-muted">(~X MB)</span>
+                                </a> 
                             </li>
                             <li>
-                                <a href="{{ url_for('main.serve_document', filename='oficio-radicacion.pdf') }}"  {# <--- CORRECTED FILENAME HERE #}
+                                <a href="{{ url_for('static_files_bp.serve_document', filename='oficio-radicacion.pdf') }}"
                                    class="govco-link" target="_blank" rel="noopener noreferrer">
                                    Oficio Radicación (PDF)
-                                </a> <span class="text-small text-muted">(363 Kb)</span>
+                                </a> 
                             </li>
                             <li>
-                                <a href="{{ url_for('main.serve_document', filename='motivos.pdf') }}"  {# <--- CORRECTED FILENAME HERE #}
+                                <a href="{{ url_for('static_files_bp.serve_document', filename='motivos.pdf') }}"
                                    class="govco-link" target="_blank" rel="noopener noreferrer">
                                    Exposición de Motivos (PDF)
-                                </a> <span class="text-small text-muted">(670 Kb)</span>
+                                </a> 
                             </li>
                         </ul>
                         <p class="mt-2 text-small text-muted">Los documentos abren en una nueva pestaña.</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="govco-row mt-5">
-                <div class="govco-col-12">
-                    <div class="govco-info-message">
-                        <p>Para explorar las metas específicas, avances y realizar seguimiento, por favor, <a href="{{ url_for('usuario_bp.login') }}">inicie sesión</a> o regístrese si es un usuario autorizado.</p>
                     </div>
                 </div>
             </div>

@@ -1,6 +1,7 @@
 # app/main/routes.py
 from flask import render_template, redirect, url_for, Blueprint, current_app, send_from_directory
 from flask_login import login_required, current_user
+import os
 
 main_bp = Blueprint('main', __name__)
 
@@ -30,30 +31,23 @@ def index_publico():
 
 @main_bp.route('/el-plan-de-desarrollo')
 def plan_detalles():
-    return render_template('public/plan_detalles.html', title='El Plan de Desarrollo Municipal') 
+    return render_template('public/plan_detalles.html', title='El Plan de Desarrollo Municipal')
 
 @main_bp.route('/ver_plan_completo')
 def serve_plan_completo_pdf():
-    pdf_filename = 'plan-de-desarrollo.pdf' 
-    directory = current_app.static_folder + '/documentos' 
+    pdf_filename = 'plan-de-desarrollo.pdf'
+    directory = current_app.static_folder + '/documentos'
+    full_path = os.path.join(directory, pdf_filename)
+
+    print(f"DEBUG: Intentando servir el plan completo desde: {full_path}")
+    print(f"DEBUG: ¿Existe el archivo para el plan completo? {os.path.exists(full_path)}")
 
     return send_from_directory(
         directory=directory,
         path=pdf_filename,
-        as_attachment=False 
+        as_attachment=False,
+        mimetype='application/pdf'
     )
-
-@main_bp.route('/documentos/<path:filename>')
-def serve_document(filename):
-    directory = current_app.static_folder + '/documentos'
-    try:
-        return send_from_directory(
-            directory=directory,
-            path=filename,
-            as_attachment=False
-        )
-    except FileNotFoundError:
-        return "Archivo no encontrado", 404
 
 @main_bp.route('/dashboard')
 @login_required

@@ -136,7 +136,7 @@ def logout():
         usuario_id=usuario_id
     )
     flash('Has cerrado sesión correctamente.', 'success')
-    return redirect(url_for('usuario_bp.login'))
+    return redirect(url_for('main.index_publico'))
 
 @usuario_bp.route('/register', methods=['GET', 'POST'])
 def register():

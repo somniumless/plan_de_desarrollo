@@ -3,7 +3,8 @@ from flask import Flask
 from app.extensiones import db, login_manager, migrate
 from app.main import routes as main_routes
 from app.auth.routes.usuario_routes import usuario_bp
-from flask_cors import CORS 
+from app.static_files import routes as static_files_routes 
+from flask_cors import CORS
 
 def create_app():
     app = Flask(__name__)
@@ -18,7 +19,7 @@ def create_app():
     login_manager.login_message_category = "info"
     migrate.init_app(app, db)
 
-    CORS(app) 
+    CORS(app)
 
     from app.auth.models import Usuario
     @login_manager.user_loader
@@ -27,6 +28,7 @@ def create_app():
 
     app.register_blueprint(main_routes.main_bp)
     app.register_blueprint(usuario_bp)
+    app.register_blueprint(static_files_routes.static_files_bp) 
 
     with app.app_context():
         from app.auth.models import Usuario, Rol, Permiso, RolPermiso, EntidadResponsable
@@ -46,7 +48,7 @@ def create_app():
 
         from .metas import init_metas
         from .indicadores import init_indicadores
-        from .documentos import init_documentos
+        from .documentos import init_documentos 
         from .notificaciones import init_notificaciones
         from .reportes import init_reportes
         from .auditoria import init_auditoria
