@@ -26,10 +26,7 @@ class Auditoria(db.Model):
     detalles = db.Column(JSON, nullable=True) 
     user_agent = db.Column(db.String(255), nullable=True)
     resultado = db.Column(db.Enum(ResultadoAccion), nullable=False)
-    ip_origen = db.Column(db.String(45), nullable=True) 
-
     usuario = relationship('Usuario', backref='registros_auditoria') 
-
     def __repr__(self):
         return f"<Auditoria {self.auditoria_id} - {self.accion}>"
 
@@ -43,6 +40,5 @@ class Auditoria(db.Model):
             'fecha_accion': self.fecha_accion.isoformat() if self.fecha_accion else None,
             'detalles': self.detalles,
             'user_agent': self.user_agent,
-            'resultado': self.resultado.value,
-            'ip_origen': self.ip_origen 
+            'resultado': self.resultado.value 
         }

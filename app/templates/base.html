@@ -8,9 +8,9 @@
         body {
             background-color: #f8f9fa;
         }
-        /* Navbar azul marino */
+        /* Navbar con difuminado entre azul oscuro y azul marino */
         .navbar-custom {
-            background-color: #001f3f; /* azul marino oscuro */
+            background: linear-gradient(to right, #001f3f, #003366);
         }
         .navbar-custom .nav-link, 
         .navbar-custom .navbar-brand {
@@ -24,20 +24,20 @@
 <body>
 <nav class="navbar navbar-expand-lg navbar-custom">
     <div class="container-fluid">
-        <a class="navbar-brand" href="#">MiApp</a>
+        <span class="navbar-brand">Plan de Desarrollo</span>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMenu" aria-controls="navbarMenu" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarMenu">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                    <a class="nav-link" href="/gestion-documentos">Gestión de documento y versiones</a>
+                    <a class="nav-link" href="/documentos/lista">Gestión de documento y versiones</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/reportes">Reportes</a>
+                    <a class="nav-link" href="/reportes/vista">Reportes</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/notificaciones">Notificaciones</a>
+                    <a class="nav-link" href="/notificaciones/vista">Notificaciones</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="/auditoria">Auditoría</a>
