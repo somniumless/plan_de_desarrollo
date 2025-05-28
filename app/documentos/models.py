@@ -1,4 +1,6 @@
-from app.extensiones import db
+# documentos models.py
+
+from app.extensiones import db 
 import enum
 
 class TipoDocumento(enum.Enum):
@@ -12,10 +14,10 @@ class TipoDocumento(enum.Enum):
     OTRO = "OTRO"
 
 class Documento(db.Model):
-    __tablename__ = 'Documento'
+    __tablename__ = 'documento'
 
     documento_id = db.Column(db.String(20), primary_key=True)
-    usuario_id = db.Column(db.String(20), db.ForeignKey('Usuario.usuario_id', ondelete='RESTRICT'), nullable=False)
+    usuario_id = db.Column(db.String(20), db.ForeignKey('usuario.usuario_id', ondelete='RESTRICT'), nullable=False) 
 
     nombre = db.Column(db.String(255), nullable=False)
     tipo = db.Column(db.Enum(TipoDocumento), nullable=False)
@@ -35,12 +37,12 @@ class Documento(db.Model):
         return f"<Documento {self.documento_id} - {self.nombre}>"
 
 class VersionDocumento(db.Model):
-    __tablename__ = 'Version_Documento'
+    __tablename__ = 'version_documento' 
 
     version_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    documento_id = db.Column(db.String(20), db.ForeignKey('Documento.documento_id', ondelete='CASCADE'), nullable=False)
+    documento_id = db.Column(db.String(20), db.ForeignKey('documento.documento_id', ondelete='CASCADE'), nullable=False)
     numero_version = db.Column(db.Integer, nullable=False)
-    usuario_id = db.Column(db.String(20), db.ForeignKey('Usuario.usuario_id', ondelete='RESTRICT'), nullable=False)
+    usuario_id = db.Column(db.String(20), db.ForeignKey('usuario.usuario_id', ondelete='RESTRICT'), nullable=False)
 
     fecha_modificacion = db.Column(db.DateTime, server_default=db.func.current_timestamp())
     cambios = db.Column(db.Text)
