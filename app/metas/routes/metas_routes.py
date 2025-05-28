@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, render_template
 from app import db 
 from app.metas.models import Meta, EstadoMetaEnum 
 from app.auditoria.utils import registrar_auditoria, ResultadoAccion
@@ -112,3 +112,7 @@ def eliminar_meta(meta_id):
     db.session.delete(meta)
     db.session.commit()
     return jsonify({'mensaje': 'Meta eliminada exitosamente'})
+
+@metas_bp.route('/')
+def metas():
+    return render_template('metas/metas.html')

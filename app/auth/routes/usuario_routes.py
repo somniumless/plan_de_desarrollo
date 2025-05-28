@@ -170,3 +170,7 @@ def eliminar_usuario(usuario_id):
     db.session.delete(usuario)
     db.session.commit()
     return jsonify({'mensaje': 'Usuario eliminado exitosamente'})
+
+@usuario_bp.route('/')
+def usuarios():
+    return render_template('usuarios/usuarios.html')
