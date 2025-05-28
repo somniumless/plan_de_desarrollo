@@ -1,225 +1,62 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestión de Metas</title>
-    <style>
-        @charset "UTF-8";
+{% extends 'base.html' %} 
 
-        /* Estilos generales */
-        body {
-            font-family: 'Montserrat', sans-serif;
-            line-height: 1.6;
-            margin: 0;
-            padding: 20px;
-            color: #333;
-            background-color: #f5f5f5;
-        }
+{% block title %}Gestión de Metas{% endblock %} 
 
-        header {
-            background-color: #2c3e50;
-            color: white;
-            padding: 20px;
-            margin-bottom: 30px;
-            border-radius: 5px;
-        }
-
-        h1, h2 {
-            font-family: 'Work Sans', sans-serif;
-            margin-top: 0;
-        }
-
-        h1 {
-            font-size: 2.2em;
-        }
-
-        h2 {
-            font-size: 1.8em;
-            color: #2c3e50;
-            border-bottom: 2px solid #2c3e50;
-            padding-bottom: 10px;
-            margin-bottom: 20px;
-        }
-
-        /* Estilos para la tabla */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 30px;
-            background-color: white;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-
-        th, td {
-            padding: 12px 15px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-        }
-
-        th {
-            background-color: #3498db;
-            color: white;
-            font-family: 'Work Sans', sans-serif;
-        }
-
-        tr:hover {
-            background-color: #f1f1f1;
-        }
-
-        /* Estilos para estados */
-        .estado-pendiente {
-            color: #e67e22;
-            font-weight: bold;
-        }
-
-        .estado-progreso {
-            color: #3498db;
-            font-weight: bold;
-        }
-
-        .estado-completada {
-            color: #27ae60;
-            font-weight: bold;
-        }
-
-        /* Estilos para el formulario */
-        form {
-            background-color: white;
-            padding: 20px;
-            border-radius: 5px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 15px;
-            font-family: 'Work Sans', sans-serif;
-        }
-
-        input[type="text"],
-        select {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-family: 'Montserrat', sans-serif;
-            margin-top: 5px;
-            box-sizing: border-box;
-        }
-
-        button {
-            background-color: #27ae60;
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-family: 'Work Sans', sans-serif;
-            margin-right: 10px;
-        }
-
-        button:hover {
-            background-color: #219653;
-        }
-
-        #cancelar-edicion {
-            background-color: #e74c3c;
-        }
-
-        #cancelar-edicion:hover {
-            background-color: #c0392b;
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            table {
-                display: block;
-                overflow-x: auto;
-            }
-
-            form {
-                padding: 15px;
-            }
-        }
-    </style>
-
+{% block head_extra %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/metas.css') }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-    
-    <script>
-        // Configuración de APIs y constantes
-        const API_URLS = {
-            listarMetas: "/api/metas",
-            crearMeta: "/api/metas/crear",
-            obtenerMetaBase: "/api/metas/",
-            actualizarMetaBase: "/api/metas/",
-            eliminarMetaBase: "/api/metas/"
-        };
+{% endblock %}
 
-        const ESTADO_META_VALUES = [
-            "Pendiente", 
-            "En progreso", 
-            "Completada"
-        ];
-    </script>
-    
-    <script src="{{ url_for('static', filename='js/metas.js') }}" defer></script>
-</head>
-<body>
-    <header>
-        <h1>Gestión de Metas</h1>
-    </header>
-    <main>
-        <section>
-            <h2>Lista de Metas</h2>
-            <table id="tabla-metas">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Nombre</th>
-                        <th>Resultado Esperado</th>
-                        <th>Descripción Resultado</th>
-                        <th>Unidad de Medida</th>
-                        <th>Estado</th>
-                        <th>Fecha Inicio</th>
-                        <th>Fecha Fin</th>
-                        <th>Fecha Registro</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Las filas se llenarán dinámicamente con JavaScript -->
+{% block content %}
+    <section class="govco-section govco-container"> 
+        <h2>Lista de Metas</h2>
+        <table id="tabla-metas">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Resultado Esperado</th>
+                    <th>Descripción Resultado</th>
+                    <th>Unidad de Medida</th>
+                    <th>Estado</th>
+                    <th>Fecha Inicio</th>
+                    <th>Fecha Fin</th>
+                    <th>Fecha Registro</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
                 </tbody>
-            </table>
-        </section>
-        <section>
-            <h2>Crear/Editar Meta</h2>
-            <form id="form-meta">
-                <label>ID Meta: <input type="text" id="meta-id" required autocomplete="off"></label> 
-                <label>Nombre: <input type="text" id="meta-nombre" required></label>
-                <label>Resultado Esperado: <input type="text" id="meta-resultado" required></label>
-                <label>Descripción del Resultado: <input type="text" id="meta-descripcion" required></label>
-                <label>Unidad de Medida: <input type="text" id="meta-unidad" required></label>
-                <label>Fecha de Inicio: <input type="date" id="meta-fecha-inicio" required></label>
-                <label>Fecha de Fin: <input type="date" id="meta-fecha-fin" required></label>
+        </table>
+    </section>
+    <section class="govco-section govco-container"> 
+        <h2>Crear/Editar Meta</h2>
+        <form id="form-meta">
+            <label>ID Meta: <input type="text" id="meta-id" required autocomplete="off"></label>
+            <label>Nombre: <input type="text" id="meta-nombre" required></label>
+            <label>Resultado Esperado: <input type="text" id="meta-resultado" required></label>
+            <label>Descripción del Resultado: <input type="text" id="meta-descripcion" required></label>
+            <label>Unidad de Medida: <input type="text" id="meta-unidad" required></label>
+            <label>Fecha de Inicio: <input type="date" id="meta-fecha-inicio" required></label>
+            <label>Fecha de Fin: <input type="date" id="meta-fecha-fin" required></label>
 
-                <label>Estado:
-                    <select id="meta-estado" required>
-                        <option value="Pendiente">Pendiente</option>
-                        <option value="En progreso">En progreso</option>
-                        <option value="Completada">Completada</option>
-                    </select>
-                </label>
-                <button type="submit">Guardar</button>
-                <button type="button" id="cancelar-edicion" style="display:none;">
-                    Cancelar
-                </button>
-            </form>
-        </section>
-    </main>
-</body>
-</html>
+            <label>Estado:
+                <select id="meta-estado" required>
+                    <option value="Pendiente">Pendiente</option>
+                    <option value="En progreso">En progreso</option>
+                    <option value="Completada">Completada</option>
+                </select>
+            </label>
+            <button type="submit">Guardar</button>
+            <button type="button" id="cancelar-edicion" style="display:none;">
+                Cancelar
+            </button>
+        </form>
+    </section>
+{% endblock %}
+
+{% block scripts_extra %}
+    <script src="{{ url_for('static', filename='js/metas.js') }}" defer></script>
+{% endblock %}

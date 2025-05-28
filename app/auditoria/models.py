@@ -2,11 +2,11 @@
 from app.extensiones import db 
 from sqlalchemy import Enum, BigInteger, ForeignKey
 from sqlalchemy.orm import relationship
-import enum
+import enum 
 from datetime import datetime
 from sqlalchemy.dialects.mysql import JSON 
 
-class ResultadoAccion(enum.Enum):
+class ResultadoAccion(str, enum.Enum): 
     EXITO = "EXITO"
     FALLO = "FALLO"
     ADVERTENCIA = "ADVERTENCIA"
@@ -27,6 +27,7 @@ class Auditoria(db.Model):
     user_agent = db.Column(db.String(255), nullable=True)
     resultado = db.Column(db.Enum(ResultadoAccion), nullable=False)
     usuario = relationship('Usuario', backref='registros_auditoria') 
+
     def __repr__(self):
         return f"<Auditoria {self.auditoria_id} - {self.accion}>"
 

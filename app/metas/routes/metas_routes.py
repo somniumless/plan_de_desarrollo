@@ -1,8 +1,8 @@
-# app/metas/routes.py
+# app/metas/metas_routes.py
 
 from flask import Blueprint, request, jsonify, render_template, redirect, url_for, flash
 from app import db
-from app.metas.models import Meta, EstadoMetaEnum
+from app.metas.models import Meta, EstadoMetaEnum 
 from app.auditoria.utils import registrar_auditoria, ResultadoAccion
 from app.auditoria.decorators import audit_action
 from flask_login import current_user, login_required
@@ -18,7 +18,7 @@ def meta_to_dict(meta):
         'meta_resultado': meta.meta_resultado,
         'descripcion_resultado': meta.descripcion_resultado,
         'unidad_medida': meta.unidad_medida,
-        'estado': meta.estado.value if meta.estado else None,
+        'estado': meta.estado.value, 
         'fecha_inicio': meta.fecha_inicio.isoformat() if meta.fecha_inicio else None,
         'fecha_fin': meta.fecha_fin.isoformat() if meta.fecha_fin else None,
         'fecha_registro': meta.fecha_registro.isoformat() if meta.fecha_registro else None,
@@ -27,12 +27,11 @@ def meta_to_dict(meta):
 @metas_bp.route('/gestion', methods=['GET']) 
 @login_required
 def gestion_metas_page():
-    """Renderiza la página principal de gestión de metas con la tabla y el formulario JS."""
     from datetime import datetime
     return render_template('metas/gestion_metas.html', 
-                           title='Gestión Integral de Metas', 
-                           EstadoMetaEnum=EstadoMetaEnum,
-                           current_timestamp=datetime.utcnow().timestamp())
+                            title='Gestión Integral de Metas', 
+                            EstadoMetaEnum=EstadoMetaEnum,
+                            current_timestamp=datetime.utcnow().timestamp())
 
 
 @metas_bp.route('/crear', methods=['POST']) 
@@ -43,7 +42,6 @@ def gestion_metas_page():
     obj_id_attr='meta_id'
 )
 def crear_meta_api():
-    """API para crear una nueva meta. Espera datos JSON del cliente (JS)."""
     data = request.get_json()
     print(f"DEBUG: Datos recibidos para POST: {data}") 
 
@@ -83,15 +81,12 @@ def crear_meta_api():
     }
     data_filtrada = {k: v for k, v in data.items() if k in campos_permitidos}
 
-    # Si tu modelo requiere fecha_registro:
     from datetime import datetime
     if 'fecha_registro' not in data_filtrada:
         data_filtrada['fecha_registro'] = datetime.utcnow()
 
-    # Convierte el Enum a su valor SOLO para auditoría, pero para la base debe ser Enum
     estado_para_db = data['estado']
     if isinstance(estado_para_db, str):
-        # Convierte string a Enum si es necesario
         estado_para_db = EstadoMetaEnum([e for e in EstadoMetaEnum if e.value == estado_para_db][0])
     data_filtrada['estado'] = estado_para_db
 
@@ -122,7 +117,6 @@ def crear_meta_api():
 
 @metas_bp.route('/', methods=['GET']) 
 def listar_metas():
-    """API para listar todas las metas. Devuelve JSON."""
     metas = Meta.query.all()
     print("DEBUG: Metas encontradas:", metas)
     result = [meta_to_dict(m) for m in metas]
@@ -131,7 +125,6 @@ def listar_metas():
 
 @metas_bp.route('/<string:meta_id>', methods=['GET']) 
 def obtener_meta(meta_id):
-    """API para obtener una meta específica por ID. Devuelve JSON."""
     meta = db.session.get(Meta, meta_id)
     if not meta:
         return jsonify({'error': 'Meta no encontrada'}), 404
@@ -145,7 +138,6 @@ def obtener_meta(meta_id):
     include_args_in_details=['data']
 )
 def actualizar_meta(meta_id):
-    """API para actualizar una meta existente. Espera JSON del cliente (JS)."""
     data = request.get_json()
     print(f"DEBUG: Datos recibidos para PUT de {meta_id}: {data}") 
     
@@ -161,8 +153,18 @@ def actualizar_meta(meta_id):
     for key, value in data.items():
         if key == 'estado' and value:
             try:
-                setattr(meta, key, EstadoMetaEnum[value.upper().replace(' ', '_')])
-            except KeyError:
+                estado_input = value.strip().lower().replace('_', ' ').replace('-', ' ')
+                found_state = None
+                for e in EstadoMetaEnum:
+                    if e.value.strip().lower() == estado_input or e.name.strip().lower().replace('_', ' ') == estado_input:
+                        found_state = e
+                        break
+                if found_state:
+                    setattr(meta, key, found_state)
+                else:
+                    valid_states = [e.value for e in EstadoMetaEnum]
+                    return jsonify({'error': f'Estado inválido para {key}: {value}. Valores permitidos: {", ".join(valid_states)}.'}), 400
+            except KeyError: 
                 valid_states = [e.value for e in EstadoMetaEnum]
                 return jsonify({'error': f'Estado inválido para {key}: {value}. Valores permitidos: {", ".join(valid_states)}.'}), 400
         elif key in ['fecha_inicio', 'fecha_fin'] and value:

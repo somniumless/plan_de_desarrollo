@@ -1,14 +1,14 @@
 # metas models.py
 
 from app.extensiones import db
-from datetime import datetime
+from datetime import datetime, timezone
 from sqlalchemy import Enum
-import enum
+import enum 
 from sqlalchemy.orm import relationship
 from sqlalchemy import CheckConstraint, ForeignKey
 from app.auth.models import EntidadResponsable, Usuario
 
-class EstadoMetaEnum(enum.Enum):
+class EstadoMetaEnum(str, enum.Enum): 
     PLANIFICADA = "Planificada"
     PENDIENTE = "Pendiente"
     EN_PROGRESO = "En progreso"
@@ -30,8 +30,8 @@ class Meta(db.Model):
     fecha_inicio = db.Column(db.Date)
     fecha_fin = db.Column(db.Date)
     fecha_registro = db.Column(
-        db.TIMESTAMP,
-        server_default=db.func.current_timestamp(),
+        db.DateTime,
+        default=lambda: datetime.now(timezone.utc),
         nullable=False
     )
 
@@ -87,7 +87,9 @@ class Avance(db.Model):
 
     titulo = db.Column(db.String(100), nullable=False)
     descripcion = db.Column(db.Text, nullable=False)
-    fecha_registro = db.Column(db.DateTime, server_default=db.func.current_timestamp())
+    fecha_registro = db.Column(
+        db.DateTime, 
+        default=lambda: datetime.now(timezone.utc))
     porcentaje = db.Column(db.Numeric(5, 2), nullable=True)
     aprobado = db.Column(db.Boolean, default=False)
 

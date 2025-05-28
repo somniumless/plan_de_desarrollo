@@ -1,54 +1,100 @@
 // metas.js - Gestión completa de metas
+
+const API_URLS = {
+    listarMetas: "/api/metas",
+    crearMeta: "/api/metas/crear",
+    obtenerMetaBase: "/api/metas/", 
+    actualizarMetaBase: "/api/metas/", 
+    eliminarMetaBase: "/api/metas/" 
+};
+
+const ESTADO_META_VALUES = [
+    "Pendiente",
+    "En progreso",
+    "Completada"
+];
+
+/**
+ * Parsea una cadena de fecha YYYY-MM-DD y crea un objeto Date en la zona horaria local.
+ * @param {string} dateString - La cadena de fecha en formato YYYY-MM-DD.
+ * @returns {Date|null} Un objeto Date local o null si la cadena es inválida/vacía.
+ */
+function parseLocalDate(dateString) {
+    if (!dateString) return null;
+    const parts = dateString.split('-');
+    const year = parseInt(parts[0], 10);
+    const month = parseInt(parts[1], 10) - 1; 
+    const day = parseInt(parts[2], 10);
+    return new Date(year, month, day);
+}
+
+
 document.addEventListener('DOMContentLoaded', function() {
-    // Elementos del DOM
     const tablaMetas = document.getElementById('tabla-metas');
     const formMeta = document.getElementById('form-meta');
     const btnCancelar = document.getElementById('cancelar-edicion');
     
-    // Variables de estado
+    const metaIdInput = document.getElementById('meta-id');
+    const metaNombreInput = document.getElementById('meta-nombre');
+    const metaResultadoInput = document.getElementById('meta-resultado');
+    const metaDescripcionInput = document.getElementById('meta-descripcion');
+    const metaUnidadInput = document.getElementById('meta-unidad');
+    const metaFechaInicioInput = document.getElementById('meta-fecha-inicio');
+    const metaFechaFinInput = document.getElementById('meta-fecha-fin');
+    const metaEstadoSelect = document.getElementById('meta-estado');
+
     let editMode = false;
     let currentEditId = null;
 
-    // Cargar metas al iniciar
     cargarMetas();
 
-    // Event Listeners
     formMeta.addEventListener('submit', manejarEnvioFormulario);
     btnCancelar.addEventListener('click', cancelarEdicion);
 
-    // Función para cargar las metas desde la API
     async function cargarMetas() {
         try {
             const response = await fetch(API_URLS.listarMetas);
-            if (!response.ok) throw new Error('Error al cargar metas');
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(`Error al cargar metas: ${response.status} - ${errorText}`);
+            }
             
             const metas = await response.json();
             renderizarMetas(metas);
         } catch (error) {
-            console.error('Error:', error);
-            alert('Error al cargar las metas');
+            console.error('Error al cargar metas:', error);
+            alert(`Error al cargar las metas: ${error.message}`);
+            tablaMetas.querySelector('tbody').innerHTML = `<tr><td colspan="10">No se pudieron cargar las metas. Intente de nuevo.</td></tr>`;
         }
     }
 
-    // Función para renderizar las metas en la tabla
+    /**
+     * Renderiza las metas en la tabla HTML.
+     * @param {Array<Object>} metas - Array de objetos de meta.
+     */
     function renderizarMetas(metas) {
         const tbody = tablaMetas.querySelector('tbody');
         tbody.innerHTML = '';
 
+        if (metas.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="10">No hay metas registradas.</td></tr>`;
+            return;
+        }
+
         metas.forEach(meta => {
             const tr = document.createElement('tr');
-            
-            // Formatear fechas para visualización
-            const fechaInicio = new Date(meta.fecha_inicio).toLocaleDateString();
-            const fechaFin = new Date(meta.fecha_fin).toLocaleDateString();
-            const fechaRegistro = new Date(meta.fecha_registro).toLocaleDateString();
+            const fechaInicioObj = parseLocalDate(meta.fecha_inicio);
+            const fechaInicio = fechaInicioObj ? fechaInicioObj.toLocaleDateString('es-CO') : 'N/A';
+            const fechaFinObj = parseLocalDate(meta.fecha_fin);
+            const fechaFin = fechaFinObj ? fechaFinObj.toLocaleDateString('es-CO') : 'N/A';
+            const fechaRegistro = meta.fecha_registro ? new Date(meta.fecha_registro).toLocaleDateString('es-CO') : 'N/A';
 
             tr.innerHTML = `
-                <td>${meta.meta_id}</td>
-                <td>${meta.nombre}</td>
-                <td>${meta.meta_resultado}</td> <!-- <--- CAMBIA AQUÍ -->
-                <td>${meta.descripcion_resultado}</td>
-                <td>${meta.unidad_medida}</td>
+                <td>${meta.meta_id || 'N/A'}</td>
+                <td>${meta.nombre || 'N/A'}</td>
+                <td>${meta.meta_resultado || 'N/A'}</td> 
+                <td>${meta.descripcion_resultado || 'N/A'}</td>
+                <td>${meta.unidad_medida || 'N/A'}</td>
                 <td class="estado-${meta.estado ? meta.estado.toLowerCase().replace(' ', '-') : 'sin-estado'}">${meta.estado || 'Sin estado'}</td>
                 <td>${fechaInicio}</td>
                 <td>${fechaFin}</td>
@@ -62,7 +108,6 @@ document.addEventListener('DOMContentLoaded', function() {
             tbody.appendChild(tr);
         });
 
-        // Agregar event listeners a los botones
         document.querySelectorAll('.btn-editar').forEach(btn => {
             btn.addEventListener('click', () => iniciarEdicion(btn.dataset.id));
         });
@@ -72,24 +117,30 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Función para manejar el envío del formulario (crear/editar)
+    /**
+     * Maneja el envío del formulario, ya sea para crear o actualizar una meta.
+     * @param {Event} e - El evento de envío del formulario.
+     */
     async function manejarEnvioFormulario(e) {
         e.preventDefault();
         
         const metaData = {
-            meta_id: document.getElementById('meta-id').value, 
-            nombre: document.getElementById('meta-nombre').value,
-            meta_resultado: document.getElementById('meta-resultado').value, // <--- CAMBIA AQUÍ
-            descripcion_resultado: document.getElementById('meta-descripcion').value,
-            unidad_medida: document.getElementById('meta-unidad').value,
-            estado: document.getElementById('meta-estado').value,
-            fecha_inicio: document.getElementById('meta-fecha-inicio').value,
-            fecha_fin: document.getElementById('meta-fecha-fin').value
+            meta_id: metaIdInput.value, 
+            nombre: metaNombreInput.value,
+            resultado_esperado: metaResultadoInput.value, 
+            descripcion_resultado: metaDescripcionInput.value,
+            unidad_medida: metaUnidadInput.value,
+            estado: metaEstadoSelect.value,
+            fecha_inicio: metaFechaInicioInput.value, 
+            fecha_fin: metaFechaFinInput.value      
         };
 
         try {
             let response;
             if (editMode) {
+                if (!currentEditId) {
+                    throw new Error('ID de meta no definido para la edición.');
+                }
                 response = await fetch(`${API_URLS.actualizarMetaBase}${currentEditId}`, {
                     method: 'PUT',
                     headers: {
@@ -107,49 +158,60 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
             }
 
-            if (!response.ok) throw new Error('Error al guardar la meta');
+            if (!response.ok) {
+                const errorData = await response.json(); 
+                throw new Error(errorData.message || `Error al guardar la meta: ${response.status}`);
+            }
 
             resetFormulario();
             cargarMetas();
             alert(`Meta ${editMode ? 'actualizada' : 'creada'} correctamente`);
         } catch (error) {
-            console.error('Error:', error);
-            alert('Error al procesar la solicitud');
+            console.error('Error al procesar la solicitud:', error);
+            alert(`Error al procesar la solicitud: ${error.message}`);
         }
     }
 
-    // Función para iniciar el modo edición
+    /**
+     * Carga los datos de una meta para su edición en el formulario.
+     * @param {string} id - El ID de la meta a editar.
+     */
     async function iniciarEdicion(id) {
         try {
             const response = await fetch(`${API_URLS.obtenerMetaBase}${id}`);
-            if (!response.ok) throw new Error('Error al cargar meta');
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(`Error al cargar meta para edición: ${response.status} - ${errorText}`);
+            }
             
             const meta = await response.json();
             
-            // Llenar el formulario con los datos de la meta
-            document.getElementById('meta-id').value = meta.meta_id;
-            document.getElementById('meta-nombre').value = meta.nombre;
-            document.getElementById('meta-resultado').value = meta.meta_resultado; // <--- CAMBIA AQUÍ
-            document.getElementById('meta-descripcion').value = meta.descripcion_resultado;
-            document.getElementById('meta-unidad').value = meta.unidad_medida;
-            document.getElementById('meta-estado').value = meta.estado;
-            document.getElementById('meta-fecha-inicio').value = meta.fecha_inicio.split('T')[0];
-            document.getElementById('meta-fecha-fin').value = meta.fecha_fin.split('T')[0];
+            metaIdInput.value = meta.meta_id || ''; 
+            metaIdInput.readOnly = true; 
+            metaNombreInput.value = meta.nombre || '';
+            metaResultadoInput.value = meta.meta_resultado || ''; 
+            metaDescripcionInput.value = meta.descripcion_resultado || '';
+            metaUnidadInput.value = meta.unidad_medida || '';
+            metaEstadoSelect.value = meta.estado || 'Pendiente'; 
+            metaFechaInicioInput.value = meta.fecha_inicio || '';
+            metaFechaFinInput.value = meta.fecha_fin || '';
             
-            // Cambiar a modo edición
             editMode = true;
-            currentEditId = id;
+            currentEditId = id; 
             btnCancelar.style.display = 'inline-block';
+            formMeta.querySelector('button[type="submit"]').textContent = 'Actualizar';
             
-            // Scroll al formulario
             document.querySelector('form').scrollIntoView({ behavior: 'smooth' });
         } catch (error) {
-            console.error('Error:', error);
-            alert('Error al cargar la meta para edición');
+            console.error('Error al iniciar edición:', error);
+            alert(`Error al cargar la meta para edición: ${error.message}`);
         }
     }
 
-    // Función para eliminar una meta
+    /**
+     * Elimina una meta por su ID.
+     * @param {string} id - El ID de la meta a eliminar.
+     */
     async function eliminarMeta(id) {
         if (!confirm('¿Estás seguro de eliminar esta meta?')) return;
         
@@ -158,26 +220,28 @@ document.addEventListener('DOMContentLoaded', function() {
                 method: 'DELETE'
             });
             
-            if (!response.ok) throw new Error('Error al eliminar meta');
-            
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(`Error al eliminar meta: ${response.status} - ${errorText}`);
+            }
             cargarMetas();
             alert('Meta eliminada correctamente');
         } catch (error) {
-            console.error('Error:', error);
-            alert('Error al eliminar la meta');
+            console.error('Error al eliminar meta:', error);
+            alert(`Error al eliminar la meta: ${error.message}`);
         }
     }
 
-    // Función para cancelar la edición
     function cancelarEdicion() {
         resetFormulario();
     }
 
-    // Función para resetear el formulario
     function resetFormulario() {
         formMeta.reset();
+        metaIdInput.readOnly = false; 
         editMode = false;
         currentEditId = null;
         btnCancelar.style.display = 'none';
+        formMeta.querySelector('button[type="submit"]').textContent = 'Guardar'; 
     }
 });
