@@ -1,21 +1,21 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Añade esta línea:
+ 
     console.log("Valor inicial de meta-id al cargar la página:", document.getElementById('meta-id').value);
+
+    limpiarFormulario(); 
 
     cargarMetas();
 
     document.getElementById('form-meta').addEventListener('submit', guardarMeta);
     document.getElementById('cancelar-edicion').addEventListener('click', limpiarFormulario);
+    
 });
 
 function cargarMetas() {
-    // Es mejor usar las URLs dinámicas de API_URLS si ya las tienes definidas en HTML
-    // fetch(API_URLS.listarMetas) 
-    fetch('http://localhost:5000/api/metas') // Usando localhost explícitamente para coincidir con la config del servidor
+    fetch('http://localhost:5000/api/metas') 
         .then(res => {
             if (!res.ok) {
-                // Si la respuesta no es 2xx, lanza un error
-                throw new Error(`Error HTTP: ${res.status} - ${res.statusText}`);
+                return res.json().then(err => { throw new Error(err.error || `Error HTTP: ${res.status} - ${res.statusText}`); });
             }
             return res.json();
         })
@@ -40,24 +40,23 @@ function cargarMetas() {
         })
         .catch(error => {
             console.error('Error al cargar metas:', error);
-            // Opcional: mostrar un mensaje al usuario en la UI
             alert('No se pudieron cargar las metas. Intenta de nuevo más tarde.');
         });
 }
 
 function guardarMeta(e) {
     e.preventDefault();
-    const metaId = document.getElementById('meta-id').value; // Usar metaId para claridad
+    const metaId = document.getElementById('meta-id').value; 
     const nombre = document.getElementById('meta-nombre').value;
-    const metaResultado = document.getElementById('meta-resultado').value; // Nuevo campo
-    const descripcionResultado = document.getElementById('meta-descripcion').value; // Nuevo campo
-    const unidadMedida = document.getElementById('meta-unidad').value; // Nuevo campo
+    const metaResultado = document.getElementById('meta-resultado').value; 
+    const descripcionResultado = document.getElementById('meta-descripcion').value;
+    const unidadMedida = document.getElementById('meta-unidad').value;
     const fechaInicio = document.getElementById('meta-fecha-inicio').value;
     const fechaFin = document.getElementById('meta-fecha-fin').value;
     const estado = document.getElementById('meta-estado').value;
 
     const metaData = { 
-        meta_id: metaId, // Asegúrate de incluir el ID para la creación (si aplica)
+        meta_id: metaId, 
         nombre: nombre,
         meta_resultado: metaResultado,
         descripcion_resultado: descripcionResultado,
@@ -70,12 +69,14 @@ function guardarMeta(e) {
     let url;
     let method;
 
-    if (metaId) { // Si hay un ID en el formulario, es una actualización (PUT)
-        url = `http://localhost:5000/api/metas/${metaId}`; // La URL correcta para PUT
+    if (metaId) { 
+        url = `http://localhost:5000/api/metas/${metaId}`; 
         method = 'PUT';
-    } else { // Si no hay ID, es una creación (POST)
-        url = 'http://localhost:5000/api/metas'; // La URL correcta para POST
+        console.log(`DEBUG JS: Preparando PUT request a ${url} con datos:`, metaData); 
+    } else { 
+        url = 'http://localhost:5000/api/metas'; 
         method = 'POST';
+        console.log(`DEBUG JS: Preparando POST request a ${url} con datos:`, metaData); 
     }
 
     fetch(url, {
@@ -87,8 +88,10 @@ function guardarMeta(e) {
     })
     .then(res => {
         if (!res.ok) {
-            // Intenta leer el mensaje de error del servidor si es un JSON
-            return res.json().then(err => { throw new Error(err.error || `Error HTTP: ${res.status}`); });
+            return res.json().then(err => { 
+                console.error('Error en la respuesta del servidor:', err); 
+                throw new Error(err.error || `Error HTTP: ${res.status}`); 
+            });
         }
         return res.json();
     })
@@ -103,7 +106,6 @@ function guardarMeta(e) {
     });
 }
 
-// Actualizada la función editarMeta para incluir todos los campos
 function editarMeta(id, nombre, metaResultado, descripcionResultado, unidadMedida, estado, fechaInicio, fechaFin) {
     document.getElementById('meta-id').value = id;
     document.getElementById('meta-nombre').value = nombre;
@@ -111,17 +113,21 @@ function editarMeta(id, nombre, metaResultado, descripcionResultado, unidadMedid
     document.getElementById('meta-descripcion').value = descripcionResultado;
     document.getElementById('meta-unidad').value = unidadMedida;
     document.getElementById('meta-estado').value = estado;
-    document.getElementById('meta-fecha-inicio').value = fechaInicio; // Las fechas ya vienen en formato 'YYYY-MM-DD'
+    document.getElementById('meta-fecha-inicio').value = fechaInicio; 
     document.getElementById('meta-fecha-fin').value = fechaFin;
     document.getElementById('cancelar-edicion').style.display = 'inline';
+    
+    document.getElementById('meta-id').readOnly = true; 
+    document.getElementById('meta-id').disabled = false; 
 }
 
 function limpiarFormulario() {
-    document.getElementById('meta-id').value = '';
-    document.getElementById('form-meta').reset();
+    document.getElementById('meta-id').value = ''; 
+    document.getElementById('form-meta').reset(); 
     document.getElementById('cancelar-edicion').style.display = 'none';
-    // Opcional: Deshabilita el campo ID para nuevas creaciones si no quieres que el usuario lo edite
-    // document.getElementById('meta-id').disabled = false;
+    
+    document.getElementById('meta-id').readOnly = false; 
+    document.getElementById('meta-id').disabled = false;
 }
 
 function eliminarMeta(id) {
@@ -131,7 +137,7 @@ function eliminarMeta(id) {
         })
         .then(res => {
             if (!res.ok) {
-                 return res.json().then(err => { throw new Error(err.error || `Error HTTP: ${res.status}`); });
+                return res.json().then(err => { throw new Error(err.error || `Error HTTP: ${res.status}`); });
             }
             return res.json();
         })

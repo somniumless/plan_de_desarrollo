@@ -1,3 +1,4 @@
+# app/auditoria/utils.py
 from app import db
 from app.auditoria.models import Auditoria, ResultadoAccion
 from flask import request, current_app
@@ -20,8 +21,7 @@ def registrar_auditoria(
             else:
                 usuario_id = None 
 
-        ip_origen = request.remote_addr if request else None
-        user_agent = request.headers.get('User-Agent') if request else None
+        user_agent = request.headers.get('User-Agent') if request else None 
 
         if detalles:
             cleaned_detalles = {}
@@ -44,7 +44,6 @@ def registrar_auditoria(
             id_entidad=id_entidad,
             fecha_accion=datetime.utcnow(),
             detalles=detalles,
-            ip_origen=ip_origen,
             user_agent=user_agent,
             resultado=resultado
         )

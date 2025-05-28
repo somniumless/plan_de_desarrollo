@@ -28,7 +28,12 @@ def meta_to_dict(meta):
 @login_required
 def gestion_metas_page():
     """Renderiza la página principal de gestión de metas con la tabla y el formulario JS."""
-    return render_template('metas/gestion_metas.html', title='Gestión Integral de Metas', EstadoMetaEnum=EstadoMetaEnum)
+    from datetime import datetime
+    return render_template('metas/gestion_metas.html', 
+                           title='Gestión Integral de Metas', 
+                           EstadoMetaEnum=EstadoMetaEnum,
+                           current_timestamp=datetime.utcnow().timestamp())
+
 
 @metas_bp.route('/', methods=['POST']) 
 @audit_action(
@@ -40,10 +45,10 @@ def gestion_metas_page():
 def crear_meta_api():
     """API para crear una nueva meta. Espera datos JSON del cliente (JS)."""
     data = request.get_json()
+    print(f"DEBUG: Datos recibidos para POST: {data}") 
 
     if not data:
         return jsonify({'error': 'No se proporcionaron datos JSON válidos'}), 400
-
 
     if 'meta_id' not in data or not data['meta_id']:
         return jsonify({'error': 'El campo meta_id es requerido y no puede estar vacío para crear una meta.'}), 400
@@ -82,7 +87,9 @@ def crear_meta_api():
 
         meta = Meta(**data_filtrada)
         db.session.add(meta)
+        print("DEBUG: Meta añadida a la sesión.") 
         db.session.commit()
+        print("DEBUG: Commit exitoso. Meta guardada en DB.") 
 
         flash(f'Meta "{meta.nombre}" creada exitosamente.', 'success')
 
@@ -93,7 +100,7 @@ def crear_meta_api():
 
     except Exception as e:
         db.session.rollback()
-        print(f"Error al crear la meta: {e}")
+        print(f"ERROR al crear la meta: {e}") 
         return jsonify({'error': 'Error al crear la meta: ' + str(e)}), 500
 
 @metas_bp.route('/', methods=['GET']) 
@@ -119,11 +126,15 @@ def obtener_meta(meta_id):
 )
 def actualizar_meta(meta_id):
     """API para actualizar una meta existente. Espera JSON del cliente (JS)."""
+    data = request.get_json()
+    print(f"DEBUG: Datos recibidos para PUT de {meta_id}: {data}") 
+    
     meta = db.session.get(Meta, meta_id)
+    print(f"DEBUG: Meta encontrada para actualizar: {meta}") 
+    
     if not meta:
         return jsonify({'error': 'Meta no encontrada'}), 404
 
-    data = request.get_json()
     if not data:
         return jsonify({'error': 'No se proporcionaron datos JSON válidos para actualizar'}), 400
 
@@ -145,11 +156,12 @@ def actualizar_meta(meta_id):
 
     try:
         db.session.commit()
+        print("DEBUG: Commit de actualización exitoso.") 
         flash(f'Meta "{meta.nombre}" actualizada exitosamente.', 'success')
         return jsonify({'mensaje': 'Meta actualizada exitosamente', 'meta': meta_to_dict(meta)})
     except Exception as e:
         db.session.rollback()
-        print(f"Error al actualizar la meta: {e}")
+        print(f"Error al actualizar la meta: {e}") 
         return jsonify({'error': 'Error al actualizar la meta: ' + str(e)}), 500
 
 
@@ -173,5 +185,5 @@ def eliminar_meta(meta_id):
         return jsonify({'mensaje': 'Meta eliminada exitosamente'})
     except Exception as e:
         db.session.rollback()
-        print(f"Error al eliminar la meta: {e}")
+        print(f"Error al eliminar la meta: {e}") 
         return jsonify({'error': 'Error al eliminar la meta: ' + str(e)}), 500

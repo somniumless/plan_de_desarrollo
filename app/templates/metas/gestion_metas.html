@@ -21,7 +21,7 @@
         {{ EstadoMetaEnum | map(attribute='value') | map('tojson') | join(', ') | safe }}
     ];
     </script>
-    <script src="{{ url_for('static', filename='metas/js/metas.js', v='1.2.3') }}" defer></script>defer></script>
+    <script src="{{ url_for('static', filename='metas/js/metas.js', v=current_timestamp) }}" defer></script>
 </head>
 <body>
     <header>
@@ -52,7 +52,7 @@
         <section>
             <h2>Crear/Editar Meta</h2>
             <form id="form-meta">
-                <label>ID Meta: <input type="text" id="meta-id" required></label>
+                <label>ID Meta: <input type="text" id="meta-id" required autocomplete="off"></label> 
                 <label>Nombre: <input type="text" id="meta-nombre" required></label>
                 <label>Resultado Esperado: <input type="text" id="meta-resultado" required></label>
                 <label>Descripción del Resultado: <input type="text" id="meta-descripcion" required></label>
