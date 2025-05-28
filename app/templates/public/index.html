@@ -21,8 +21,6 @@
                 <ul>
                     <li><a href="/">Inicio</a></li>
                     <li><a href="{{ url_for('main.plan_detalles') }}">Plan de Desarrollo</a></li>
-                    <li><a href="{{ url_for('main.preguntas_frecuentes') }}">Preguntas Frecuentes</a></li>
-                    <li><a href="{{ url_for('main.contacto') }}">Contacto</a></li>
                     
                     {% if current_user.is_authenticated %}
                         <li><a href="{{ url_for('metas_bp.gestion_metas_page') }}">Gestión de Metas</a></li>
