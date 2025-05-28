@@ -43,12 +43,17 @@
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             padding: 1rem;
             margin-bottom: 1rem;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;     
         }
 
         /* Resumen de Metas */
         #resumen-metas {
             display: flex;
-            flex-direction: column;
+            flex-direction: wrap;
         }
 
         #metas-container {
@@ -96,6 +101,32 @@
             color: #004884;
         }
 
+        button {
+            background-color: #004884;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            padding: 0.6rem 1.5rem;
+            font-size: 1rem;
+            font-family: 'Montserrat-SemiBold', sans-serif;
+            cursor: pointer;
+            margin-top: 1rem;
+            transition: background 0.2s, box-shadow 0.2s, transform 0.1s;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.07);
+            letter-spacing: 0.5px;
+            width: 100%;
+            text-align: center;
+            box-sizing: border-box;
+            display: inline-block;
+        }
+
+        button:hover, button:focus {
+            background-color: #0066b3;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.13);
+            transform: translateY(-2px) scale(1.03);
+            outline: none;
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             .meta-card {
@@ -112,28 +143,28 @@
         <section id="resumen-metas">
             <h2>Resumen de Metas</h2>
             <div id="metas-container"></div>
-        </section>
-        <section id="resumen-avances">
-            <h2>Avances</h2>
-            <div id="avances-container"></div>
+            <button onclick="window.location.href='/api/metas/gestion'">Ir a Gestión de Metas</button>
         </section>
         <section id="notificaciones">
             <h2>Notificaciones</h2>
             <ul id="notificaciones-list"></ul>
+            <button onclick="window.location.href='/notificaciones/vista'">Ir a Notificaciones</button>
         </section>
         <section id="documentos">
             <h2>Documentos</h2>
             <div id="documentos"></div>
-        </section>
-        <section id="metas-detalladas">
-            <h2>Metas Detalladas</h2>
-            <div id="metas-detalladas-container"></div>
+            <button onclick="window.location.href='/documentos'">Ir a Documentos</button>
         </section>
         <section id="reportes">
             <h2>Reportes</h2>
             <div id="reportes-container"></div>
+            <button onclick="window.location.href='/reportes/vista'">Ir a Reportes</button>
+        </section>
+        <section id="resumen-avances">
+            <h2>Avances</h2>
+            <div id="avances-container"></div>
+            <button onclick="window.location.href='/avances'">Ir a Gestión de Avances</button>
         </section>
     </main>
-    <script src="js/dashboard.js"></script>
 </body>
 </html>

@@ -26,13 +26,9 @@ def reporte_to_dict(r):
         'estado': r.estado.value if r.estado else None
     }
 
-
-
 @reportes_bp.route('/vista')
 def vista_reportes():
     return render_template('reportes/reportes.html')
-
-
 
 @reportes_bp.route('/', methods=['GET'])
 def listar_reportes():

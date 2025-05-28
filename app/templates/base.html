@@ -38,15 +38,15 @@
     <main>
         {% block content %}{% endblock %} 
     </main>
-
-    <footer class="govco-simple-footer">
-        <div class="govco-container">
-            <div class="govco-footer-content">
-                <img src="{{ url_for('static', filename='img/escudo_zipaquira.png') }}" alt="Escudo de Zipaquirá" class="govco-footer-logo">
-                <p>Alcaldía Municipal de Zipaquirá</p>
-            </div>
-        </div>
-    </footer>
-    {% block scripts_extra %}{% endblock %} 
+{% block scripts_extra %}{% endblock %} 
 </body>
+
+<footer class="govco-simple-footer">
+    <div class="govco-container">
+        <div class="govco-footer-content">
+            <img src="{{ url_for('static', filename='img/escudo_zipaquira.png') }}" alt="Escudo de Zipaquirá" class="govco-footer-logo">
+            <p>Alcaldía Municipal de Zipaquirá</p>
+        </div>
+    </div>
+</footer>
 </html>

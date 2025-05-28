@@ -50,9 +50,8 @@ def crear_avance():
     return jsonify({'mensaje': 'Avance creado exitosamente', 'avance_id': avance.avance_id}), 201
 
 @avances_bp.route('/', methods=['GET'])
-def listar_avances():
-    avances = Avance.query.all()
-    return jsonify([avance_to_dict(a) for a in avances])
+def avances():
+    return render_template('avances/avances.html')
 
 @avances_bp.route('/<int:avance_id>', methods=['GET'])
 def obtener_avance(avance_id):
@@ -99,7 +98,3 @@ def eliminar_avance(avance_id):
     db.session.delete(avance)
     db.session.commit()
     return jsonify({'mensaje': 'Avance eliminado exitosamente'})
-
-@avances_bp.route('/')
-def avances():
-    return render_template('avances/avances.html')

@@ -18,10 +18,9 @@ class Documento(db.Model):
 
     documento_id = db.Column(db.String(20), primary_key=True)
     usuario_id = db.Column(db.String(20), db.ForeignKey('usuario.usuario_id', ondelete='RESTRICT'), nullable=False) 
-
     nombre = db.Column(db.String(255), nullable=False)
     tipo = db.Column(db.Enum(TipoDocumento), nullable=False)
-    tamaño_mb = db.Column(db.Numeric(10, 2), nullable=False)
+    tamano_mb = db.Column(db.Numeric(10, 2), nullable=False)
     fecha_subida = db.Column(db.DateTime, server_default=db.func.current_timestamp())
     ubicacion_almacenamiento = db.Column(db.String(512))
     hash_archivo = db.Column(db.String(64))
@@ -30,7 +29,7 @@ class Documento(db.Model):
     usuario = db.relationship('Usuario', backref=db.backref('documentos', lazy=True))
 
     __table_args__ = (
-        db.CheckConstraint('tamaño_mb > 0', name='check_tamaño_mb_positive'),
+        db.CheckConstraint('tamano_mb > 0', name='check_tamano_mb_positive'),
     )
 
     def __repr__(self):
@@ -43,7 +42,6 @@ class VersionDocumento(db.Model):
     documento_id = db.Column(db.String(20), db.ForeignKey('documento.documento_id', ondelete='CASCADE'), nullable=False)
     numero_version = db.Column(db.Integer, nullable=False)
     usuario_id = db.Column(db.String(20), db.ForeignKey('usuario.usuario_id', ondelete='RESTRICT'), nullable=False)
-
     fecha_modificacion = db.Column(db.DateTime, server_default=db.func.current_timestamp())
     cambios = db.Column(db.Text)
     hash_version = db.Column(db.String(64))
