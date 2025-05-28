@@ -1,6 +1,7 @@
 # app/metas/routes/avance_routes.py
 
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, render_template
+from datetime import datetime
 from app import db 
 from app.metas.models import Avance, Meta 
 from app.auditoria.utils import registrar_auditoria, ResultadoAccion
@@ -98,3 +99,7 @@ def eliminar_avance(avance_id):
     db.session.delete(avance)
     db.session.commit()
     return jsonify({'mensaje': 'Avance eliminado exitosamente'})
+
+@avances_bp.route('/')
+def avances():
+    return render_template('avances/avances.html')

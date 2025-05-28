@@ -1,6 +1,31 @@
-<h1>Metas del Plan de Desarrollo</h1>
-<ul>
-    {% for meta in metas %}
-        <li>{{ meta.nombre }} - {{ meta.estado }}</li>
-    {% endfor %}
-</ul>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard - Plan de Desarrollo</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='dashboard/css/dashboard.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='all.css') }}">
+    <script src="{{ url_for('static', filename='dashboard/js/dashboard.js') }}" defer></script>
+    <script src="{{ url_for('static', filename='dashboard/js/govco-icons.js') }}" defer></script>
+</head>
+<body>
+    <header>
+        <h1>Dashboard</h1>
+    </header>
+    <main>
+        <section id="resumen-metas">
+            <h2>Resumen de Metas</h2>
+            <div id="metas-container"></div>
+        </section>
+        <section id="resumen-avances">
+            <h2>Avances</h2>
+            <div id="avances-container"></div>
+        </section>
+        <section id="notificaciones">
+            <h2>Notificaciones</h2>
+            <ul id="notificaciones-list"></ul>
+        </section>
+    </main>
+    <script src="js/dashboard.js"></script>
+</body>
+</html>
