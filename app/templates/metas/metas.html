@@ -4,8 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestión de Metas</title>
-    <link rel="stylesheet" href="css/metas.css">
-    <link rel="stylesheet" href="css/all.css"> <!-- Asegúrate de incluir el CSS de iconos -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='metas/css/metas.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='all.css') }}">
+    <script src="{{ url_for('static', filename='metas/js/metas.js') }}" defer></script>
+    <script src="{{ url_for('static', filename='metas/js/govco-icons.js') }}" defer></script>
 </head>
 <body>
     <header>

@@ -3,8 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <title>Dashboard - Plan de Desarrollo</title>
-    <link rel="stylesheet" href="css/dashboard.css">
-    <link rel="stylesheet" href="css/all.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='dashboard/css/dashboard.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='all.css') }}">
+    <script src="{{ url_for('static', filename='dashboard/js/dashboard.js') }}" defer></script>
+    <script src="{{ url_for('static', filename='dashboard/js/govco-icons.js') }}" defer></script>
 </head>
 <body>
     <header>
