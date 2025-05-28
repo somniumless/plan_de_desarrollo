@@ -61,19 +61,19 @@ def crear_meta_api():
         data['meta_resultado'] = data.pop('resultado_esperado')
 
     if 'estado' in data and data['estado']:
-        try:
-            # Buscar por valor
-            estado = next(e for e in EstadoMetaEnum if e.value == data['estado'])
-            data['estado'] = estado
-        except StopIteration:
-            try:
-                # Buscar por nombre
-                data['estado'] = EstadoMetaEnum[data['estado'].upper().replace(' ', '_')]
-            except KeyError:
-                valid_states = [e.value for e in EstadoMetaEnum]
-                return jsonify({
-                    'error': f'Estado inválido. Valores permitidos: {", ".join(valid_states)}'
-                }), 400
+        estado_input = data['estado'].strip().lower().replace('_', ' ').replace('-', ' ')
+        estado_match = None
+        for e in EstadoMetaEnum:
+            if e.value.strip().lower() == estado_input or e.name.strip().lower().replace('_', ' ') == estado_input:
+                estado_match = e
+                break
+        if estado_match:
+            data['estado'] = estado_match
+        else:
+            valid_states = [e.value for e in EstadoMetaEnum]
+            return jsonify({
+                'error': f'Estado inválido. Valores permitidos: {", ".join(valid_states)}'
+            }), 400
     elif 'estado' not in data or not data['estado']:
         data['estado'] = EstadoMetaEnum.PENDIENTE
 
@@ -86,11 +86,14 @@ def crear_meta_api():
     # Si tu modelo requiere fecha_registro:
     from datetime import datetime
     if 'fecha_registro' not in data_filtrada:
-        data_filtrada['fecha_registro'] = datetime.utcnow().date()
+        data_filtrada['fecha_registro'] = datetime.utcnow()
 
-    # Convierte el Enum a su valor antes de crear la meta
-    if isinstance(data_filtrada.get('estado'), EstadoMetaEnum):
-        data_filtrada['estado'] = data_filtrada['estado'].value
+    # Convierte el Enum a su valor SOLO para auditoría, pero para la base debe ser Enum
+    estado_para_db = data['estado']
+    if isinstance(estado_para_db, str):
+        # Convierte string a Enum si es necesario
+        estado_para_db = EstadoMetaEnum([e for e in EstadoMetaEnum if e.value == estado_para_db][0])
+    data_filtrada['estado'] = estado_para_db
 
     print("DEBUG: data_filtrada antes de crear Meta:", data_filtrada)
 
@@ -121,7 +124,10 @@ def crear_meta_api():
 def listar_metas():
     """API para listar todas las metas. Devuelve JSON."""
     metas = Meta.query.all()
-    return jsonify([meta_to_dict(m) for m in metas])
+    print("DEBUG: Metas encontradas:", metas)
+    result = [meta_to_dict(m) for m in metas]
+    print("DEBUG: Resultado serializado:", result)
+    return jsonify(result)
 
 @metas_bp.route('/<string:meta_id>', methods=['GET']) 
 def obtener_meta(meta_id):

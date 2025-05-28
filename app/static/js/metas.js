@@ -44,18 +44,18 @@ document.addEventListener('DOMContentLoaded', function() {
             const fechaRegistro = new Date(meta.fecha_registro).toLocaleDateString();
 
             tr.innerHTML = `
-                <td>${meta.id}</td>
+                <td>${meta.meta_id}</td>
                 <td>${meta.nombre}</td>
-                <td>${meta.resultado_esperado}</td>
+                <td>${meta.meta_resultado}</td> <!-- <--- CAMBIA AQUÍ -->
                 <td>${meta.descripcion_resultado}</td>
                 <td>${meta.unidad_medida}</td>
-                <td class="estado-${meta.estado.toLowerCase().replace(' ', '-')}">${meta.estado}</td>
+                <td class="estado-${meta.estado ? meta.estado.toLowerCase().replace(' ', '-') : 'sin-estado'}">${meta.estado || 'Sin estado'}</td>
                 <td>${fechaInicio}</td>
                 <td>${fechaFin}</td>
                 <td>${fechaRegistro}</td>
                 <td>
-                    <button class="btn-editar" data-id="${meta.id}">Editar</button>
-                    <button class="btn-eliminar" data-id="${meta.id}">Eliminar</button>
+                    <button class="btn-editar" data-id="${meta.meta_id}">Editar</button>
+                    <button class="btn-eliminar" data-id="${meta.meta_id}">Eliminar</button>
                 </td>
             `;
 
@@ -77,9 +77,9 @@ document.addEventListener('DOMContentLoaded', function() {
         e.preventDefault();
         
         const metaData = {
-            meta_id: document.getElementById('meta-id').value,
+            meta_id: document.getElementById('meta-id').value, 
             nombre: document.getElementById('meta-nombre').value,
-            resultado_esperado: document.getElementById('meta-resultado').value,
+            meta_resultado: document.getElementById('meta-resultado').value, // <--- CAMBIA AQUÍ
             descripcion_resultado: document.getElementById('meta-descripcion').value,
             unidad_medida: document.getElementById('meta-unidad').value,
             estado: document.getElementById('meta-estado').value,
@@ -127,9 +127,9 @@ document.addEventListener('DOMContentLoaded', function() {
             const meta = await response.json();
             
             // Llenar el formulario con los datos de la meta
-            document.getElementById('meta-id').value = meta.id;
+            document.getElementById('meta-id').value = meta.meta_id;
             document.getElementById('meta-nombre').value = meta.nombre;
-            document.getElementById('meta-resultado').value = meta.resultado_esperado;
+            document.getElementById('meta-resultado').value = meta.meta_resultado; // <--- CAMBIA AQUÍ
             document.getElementById('meta-descripcion').value = meta.descripcion_resultado;
             document.getElementById('meta-unidad').value = meta.unidad_medida;
             document.getElementById('meta-estado').value = meta.estado;

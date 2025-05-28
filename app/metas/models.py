@@ -9,10 +9,10 @@ from sqlalchemy import CheckConstraint, ForeignKey
 from app.auth.models import EntidadResponsable, Usuario
 
 class EstadoMetaEnum(enum.Enum):
-    PLANIFICADA = "PLANIFICADA"
-    EN_EJECUCION = "EN_EJECUCION"
-    CUMPLIDA = "CUMPLIDA"
-    CANCELADA = "CANCELADA"
+    PLANIFICADA = "Planificada"
+    PENDIENTE = "Pendiente"
+    EN_PROGRESO = "En progreso"
+    COMPLETADA = "Completada"
 
 class Meta(db.Model):
     __tablename__ = 'meta'
