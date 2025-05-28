@@ -4,10 +4,215 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestión de Avances</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='avances/css/avances.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='all.css') }}">
     <script src="{{ url_for('static', filename='avances/js/avances.js') }}" defer></script>
     <script src="{{ url_for('static', filename='avances/js/govco-icons.js') }}" defer></script>
+    <style>
+        @charset "UTF-8";
+
+        /* Importar las fuentes definidas en all.css */
+        @font-face {
+            font-family: 'Montserrat-Regular';
+            src: url('../assets/fonts/Montserrat/Montserrat-Regular.ttf');
+        }
+
+        @font-face {
+            font-family: 'WorkSans-SemiBold';
+            src: url('../assets/fonts/Work_Sans/static/WorkSans-SemiBold.ttf');
+        }
+
+        /* Estilos generales */
+        body {
+            font-family: 'Montserrat-Regular', sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+            background-color: #f5f9ff; /* Fondo azul claro */
+        }
+
+        header {
+            background-color: #2c3e50; /* Azul principal */
+            color: white;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-radius: 5px;
+        }
+
+        h1, h2 {
+            font-family: 'WorkSans-SemiBold', sans-serif;
+            margin-top: 0;
+        }
+
+        h1 {
+            font-size: 2.2em;
+        }
+
+        h2 {
+            font-size: 1.8em;
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        /* Estilos para la tabla */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+            background-color: white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #3498db;
+            color: white;
+            font-family: 'WorkSans-SemiBold', sans-serif;
+        }
+
+        tr:hover {
+            background-color: #f1f7fd; /* Azul muy claro para hover */
+        }
+
+        /* Estilos para la barra de progreso */
+        .progress-container {
+            width: 100%;
+            background-color: #e0e0e0;
+            border-radius: 5px;
+            height: 20px;
+            margin-top: 5px;
+        }
+
+        .progress-bar {
+            height: 100%;
+            border-radius: 5px;
+            background-color: #2ecc71; /* Verde para el progreso */
+            text-align: center;
+            color: white;
+            font-size: 12px;
+            line-height: 20px;
+        }
+
+        /* Estilos para el formulario */
+        form {
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 15px;
+            font-family: 'WorkSans-SemiBold', sans-serif;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        input[type="date"],
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: 'Montserrat-Regular', sans-serif;
+            margin-top: 5px;
+            box-sizing: border-box;
+        }
+
+        input[type="number"] {
+            width: 80px;
+        }
+
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: 'WorkSans-SemiBold', sans-serif;
+            margin-right: 10px;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+
+        #cancelar-edicion {
+            background-color: #e74c3c;
+        }
+
+        #cancelar-edicion:hover {
+            background-color: #c0392b;
+        }
+
+        /* Iconos de acciones (usando govco-fontv2) */
+        [class^="govco-"]:before, 
+        [class*=" govco-"]:before {
+            font-family: "govco-fontv2";
+            font-style: normal;
+            font-weight: normal;
+            display: inline-block;
+            text-decoration: inherit;
+            width: 1em;
+            margin-right: .2em;
+            text-align: center;
+            font-variant: normal;
+            text-transform: none;
+            line-height: 1em;
+            margin-left: .2em;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* Clases para iconos específicos para avances */
+        .govco-trending-up:before { content: '\e8a2'; } /* Icono de progreso */
+        .govco-list-alt:before { content: '\ea16'; } /* Icono de lista */
+        .govco-edit:before { content: '\e91f'; } /* Icono de editar */
+        .govco-trash-alt:before { content: '\eb89'; } /* Icono de eliminar */
+        .govco-calendar:before { content: '\e881'; } /* Icono de calendario */
+        .govco-percent:before { content: '\ea82'; } /* Icono de porcentaje */
+        .govco-save:before { content: '\ead8'; } /* Icono de guardar */
+        .govco-cancel:before { content: '\e8ed'; } /* Icono de cancelar */
+
+        /* Estilos para botones con iconos */
+        .btn-icon {
+            display: inline-flex;
+            align-items: center;
+            padding: 5px 10px;
+            margin: 0 5px;
+        }
+
+        .btn-icon i {
+            margin-right: 5px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            table {
+                display: block;
+                overflow-x: auto;
+            }
+            
+            form {
+                padding: 15px;
+            }
+            
+            input[type="number"] {
+                width: 100%;
+            }
+        }
+            </style>
+
 </head>
 <body>
     <header>

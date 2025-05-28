@@ -35,7 +35,7 @@ def gestion_metas_page():
                            current_timestamp=datetime.utcnow().timestamp())
 
 
-@metas_bp.route('/', methods=['POST']) 
+@metas_bp.route('/crear', methods=['POST']) 
 @audit_action(
     accion='CREAR_META_API',
     entidad_afectada_name='Meta',
@@ -57,14 +57,23 @@ def crear_meta_api():
     elif 'nombre' not in data or not data['nombre']:
         return jsonify({'error': 'Se requiere nombre para la meta'}), 400
 
+    if 'resultado_esperado' in data and 'meta_resultado' not in data:
+        data['meta_resultado'] = data.pop('resultado_esperado')
+
     if 'estado' in data and data['estado']:
         try:
-            data['estado'] = EstadoMetaEnum[data['estado'].upper().replace(' ', '_')]
-        except KeyError:
-            valid_states = [e.value for e in EstadoMetaEnum]
-            return jsonify({
-                'error': f'Estado inválido. Valores permitidos: {", ".join(valid_states)}'
-            }), 400
+            # Buscar por valor
+            estado = next(e for e in EstadoMetaEnum if e.value == data['estado'])
+            data['estado'] = estado
+        except StopIteration:
+            try:
+                # Buscar por nombre
+                data['estado'] = EstadoMetaEnum[data['estado'].upper().replace(' ', '_')]
+            except KeyError:
+                valid_states = [e.value for e in EstadoMetaEnum]
+                return jsonify({
+                    'error': f'Estado inválido. Valores permitidos: {", ".join(valid_states)}'
+                }), 400
     elif 'estado' not in data or not data['estado']:
         data['estado'] = EstadoMetaEnum.PENDIENTE
 
@@ -74,12 +83,16 @@ def crear_meta_api():
     }
     data_filtrada = {k: v for k, v in data.items() if k in campos_permitidos}
 
-    for date_field in ['fecha_inicio', 'fecha_fin']:
-        if date_field in data_filtrada and data_filtrada[date_field]:
-            try:
-                data_filtrada[date_field] = datetime.strptime(data_filtrada[date_field], '%Y-%m-%d').date()
-            except ValueError:
-                return jsonify({'error': f'Formato de fecha inválido para {date_field}. Use YYYY-MM-DD.'}), 400
+    # Si tu modelo requiere fecha_registro:
+    from datetime import datetime
+    if 'fecha_registro' not in data_filtrada:
+        data_filtrada['fecha_registro'] = datetime.utcnow().date()
+
+    # Convierte el Enum a su valor antes de crear la meta
+    if isinstance(data_filtrada.get('estado'), EstadoMetaEnum):
+        data_filtrada['estado'] = data_filtrada['estado'].value
+
+    print("DEBUG: data_filtrada antes de crear Meta:", data_filtrada)
 
     try:
         if Meta.query.get(data_filtrada['meta_id']):
@@ -91,7 +104,7 @@ def crear_meta_api():
         db.session.commit()
         print("DEBUG: Commit exitoso. Meta guardada en DB.") 
 
-        flash(f'Meta "{meta.nombre}" creada exitosamente.', 'success')
+        flash(f'Meta \"{meta.nombre}\" creada exitosamente.', 'success')
 
         return jsonify({
             'mensaje': 'Meta creada exitosamente',
@@ -100,6 +113,7 @@ def crear_meta_api():
 
     except Exception as e:
         db.session.rollback()
+        import traceback; traceback.print_exc()
         print(f"ERROR al crear la meta: {e}") 
         return jsonify({'error': 'Error al crear la meta: ' + str(e)}), 500
 
