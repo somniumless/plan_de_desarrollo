@@ -24,6 +24,11 @@ def notificacion_to_dict(n):
         'url_accion': n.url_accion,
         'prioridad': n.prioridad.value if n.prioridad else None
     }
+from flask import render_template
+
+@notificaciones_bp.route('/vista', methods=['GET'])
+def vista_notificaciones():
+    return render_template('notificaciones/notificaciones.html')
 
 @notificaciones_bp.route('/', methods=['GET'])
 def listar_notificaciones():

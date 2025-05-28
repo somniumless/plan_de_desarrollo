@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block title %}Reportes{% endblock %}
+
+{% block content %}
+<h1>Lista de Reportes</h1>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Tipo</th>
+            <th>Estado</th>
+            <th>Fecha Generación</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for r in reportes %}
+        <tr>
+            <td>{{ r.reporte_id }}</td>
+            <td>{{ r.nombre }}</td>
+            <td>{{ r.tipo }}</td>
+            <td>{{ r.estado.value }}</td>
+            <td>{{ r.fecha_generacion.strftime('%Y-%m-%d') if r.fecha_generacion else 'N/A' }}</td>
+        </tr>
+        {% else %}
+        <tr><td colspan="5">No hay reportes disponibles</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

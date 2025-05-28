@@ -1,5 +1,4 @@
-# app/documentos/routes/documento_routes.py
-
+from flask import render_template
 from flask import Blueprint, request, jsonify
 from app import db
 from app.documentos.models import Documento, TipoDocumento
@@ -23,6 +22,11 @@ def documento_to_dict(doc):
         "hash_archivo": doc.hash_archivo,
         "eliminado": doc.eliminado
     }
+
+@documento_bp.route('/lista', methods=['GET'])
+def lista_documentos():
+    documentos = Documento.query.all()
+    return render_template('documentos/documentos.html', documentos=[documento_to_dict(d) for d in documentos])
 
 @documento_bp.route('/', methods=['POST'])
 @audit_action(

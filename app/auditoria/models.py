@@ -4,6 +4,8 @@ from sqlalchemy.orm import relationship
 import enum
 from datetime import datetime 
 
+
+
 class ResultadoAccion(enum.Enum):
     EXITO = "EXITO"
     FALLO = "FALLO"

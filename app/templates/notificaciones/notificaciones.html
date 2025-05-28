@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block title %}Notificaciones{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2 class="mb-4">Notificaciones</h2>
+
+    <div id="alerta-error" class="alert alert-danger d-none"></div>
+
+    <table class="table table-striped">
+        <thead class="table-dark">
+            <tr>
+                <th>ID</th>
+                <th>Título</th>
+                <th>Mensaje</th>
+                <th>Tipo</th>
+                <th>Prioridad</th>
+                <th>Fecha de Envío</th>
+                <th>Fecha de Lectura</th>
+                <th>Leída</th>
+            </tr>
+        </thead>
+        <tbody id="tabla-notificaciones">
+            <!-- Aquí se insertan las filas con JavaScript -->
+        </tbody>
+    </table>
+</div>
+
+<script>
+    async function cargarNotificaciones() {
+        try {
+            const respuesta = await fetch("/notificaciones/");
+            if (!respuesta.ok) throw new Error("Error al obtener las notificaciones.");
+
+            const datos = await respuesta.json();
+            const tabla = document.getElementById("tabla-notificaciones");
+            tabla.innerHTML = "";
+
+            datos.forEach(n => {
+                const fila = `
+                    <tr>
+                        <td>${n.notificacion_id}</td>
+                        <td>${n.titulo}</td>
+                        <td>${n.mensaje}</td>
+                        <td>${n.tipo}</td>
+                        <td>${n.prioridad}</td>
+                        <td>${n.fecha_envio ? new Date(n.fecha_envio).toLocaleString() : ""}</td>
+                        <td>${n.fecha_lectura ? new Date(n.fecha_lectura).toLocaleString() : ""}</td>
+                        <td>${n.leida ? "Sí" : "No"}</td>
+                    </tr>
+                `;
+                tabla.innerHTML += fila;
+            });
+        } catch (error) {
+            const alerta = document.getElementById("alerta-error");
+            alerta.textContent = error.message;
+            alerta.classList.remove("d-none");
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", cargarNotificaciones);
+</script>
+{% endblock %}
