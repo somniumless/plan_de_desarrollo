@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/mintic_style.css') }}">
+</head>
+<body>
+    <header class="govco-header">
+        <div class="govco-entity-bar">
+            <div class="govco-container">
+                <a href="/" class="govco-entity-logo">
+                    <img src="{{ url_for('static', filename='img/escudo_zipaquira.png') }}" alt="Escudo de Zipaquira">
+                    <span>Alcaldía Municipal de Zipaquirá</span>
+                </a>
+            </div>
+        </div>
+        <nav class="govco-main-nav">
+            <div class="govco-container">
+                <ul>
+                    <li><a href="/">Inicio</a></li>
+                    <li><a href="{{ url_for('main.plan_detalles') }}">Plan de Desarrollo</a></li>
+                    <li><a href="{{ url_for('main.preguntas_frecuentes') }}">Preguntas Frecuentes</a></li>
+                    <li><a href="{{ url_for('main.contacto') }}">Contacto</a></li>
+                    
+                    {% if current_user.is_authenticated %}
+                        <li><a href="{{ url_for('metas_bp.gestion_metas_page') }}">Gestión de Metas</a></li>
+                        <li><a href="{{ url_for('usuario_bp.logout') }}">Cerrar Sesión</a></li>
+                    {% else %}
+                        <li><a href="{{ url_for('usuario_bp.login') }}">Iniciar Sesión</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+        </nav>
+    </header>
+    
+    <main>
+        <section class="govco-section govco-container" id="plan-info-detalles">
+            <h2 class="text-center mb-4">Plan de Desarrollo Municipal 2024-2027: ZlPAQUlRÁ CREE, PROTEGE Y AVANZA</h2>
+            
+            <div class="govco-row">
+                <div class="govco-col-md-8">
+                    <div class="govco-card govco-card-primary">
+                        <h3>Resumen General del Plan</h3>
+                        <p>El Plan de Desarrollo del municipio de Zipaquirá (Cundinamarca) para el periodo 2024-2027, titulado <strong>"ZlPAQUlRÁ CREE, PROTEGE Y AVANZA"</strong>, es la hoja de ruta estratégica adoptada mediante el <strong>Acuerdo 02 del 12 de Junio de 2024</strong>.</p>
+                        <p>Su misión es implementar un modelo de gobernanza que recupere la confianza y la credibilidad del ciudadano en el potencial del municipio, mejorando el desarrollo económico, social y ambiental de sus habitantes. Esto se logrará a través de la consolidación de áreas clave como:</p>
+                        <ul class="govco-list-bullet">
+                            <li>Seguridad</li>
+                            <li>Turismo</li>
+                            <li>Cultura Ciudadana</li>
+                            <li>Sostenibilidad</li>
+                            <li>Ciudad Digital</li>
+                            <li>Transporte y Movilidad</li>
+                            <li>Entornos Familiares Seguros</li>
+                        </ul>
+                        <p>Este plan de desarrollo se estructura en torno a <strong>tres (3) líneas estratégicas</strong> fundamentales que guiarán todas las acciones y proyectos de la administración municipal:</p>
+                        <ol class="govco-list-ordered">
+                            <li><strong>Zipaquirá Cree:</strong> Fortaleciendo el tejido social, la educación, la salud y la participación ciudadana, para construir una comunidad más unida y consciente de su potencial.</li>
+                            <li><strong>Zipaquirá Protege:</strong> Salvaguardando el medio ambiente, los recursos naturales, el patrimonio cultural y la seguridad de los ciudadanos, garantizando un entorno seguro y sostenible para las generaciones futuras.</li>
+                            <li><strong>Zipaquirá Avanza:</strong> Impulsando el desarrollo económico, la infraestructura, la innovación y la gobernanza transparente y eficiente, para consolidar a Zipaquirá como un referente de progreso y modernidad en la región.</li>
+                        </ol>
+                        <p class="mt-3">Te invitamos a explorar el documento completo para comprender a fondo cada una de estas líneas y los programas específicos que las componen.</p>
+                    </div>
+                </div>
+
+                <div class="govco-col-md-4">
+                    <div class="govco-card govco-card-secondary">
+                        <h3>Detalles del Recurso</h3>
+                        <ul class="govco-info-list">
+                            <li><strong>Tipo de Recurso:</strong> Documento</li>
+                            <li><strong>Formato:</strong> PDF</li>
+                            <li><strong>Autor:</strong> Alcaldía de Zipaquirá (Cundinamarca)</li>
+                            <li><strong>Fuente:</strong> Alcaldía de Zipaquirá. Plan de Desarrollo del municipio de Zipaquirá - Cundinamarca “ZlPAQUlRÁ CREE, PROTEGE Y AVANZA” para el periodo 2024 - 2027.</li>
+                        </ul>
+                        
+                        <h4 class="mt-4">Documentos para Descargar:</h4>
+                        <ul class="govco-list-bullet">
+                            <li>
+                                <a href="{{ url_for('main.serve_plan_completo_pdf') }}" 
+                                   class="govco-link" target="_blank" rel="noopener noreferrer">
+                                   Plan de Desarrollo (Documento Principal)
+                                </a> <span class="text-small text-muted">(~X MB)</span>
+                            </li>
+                            <li>
+                                <a href="{{ url_for('main.serve_document', filename='oficio-radicacion.pdf') }}"  {# <--- CORRECTED FILENAME HERE #}
+                                   class="govco-link" target="_blank" rel="noopener noreferrer">
+                                   Oficio Radicación (PDF)
+                                </a> <span class="text-small text-muted">(363 Kb)</span>
+                            </li>
+                            <li>
+                                <a href="{{ url_for('main.serve_document', filename='motivos.pdf') }}"  {# <--- CORRECTED FILENAME HERE #}
+                                   class="govco-link" target="_blank" rel="noopener noreferrer">
+                                   Exposición de Motivos (PDF)
+                                </a> <span class="text-small text-muted">(670 Kb)</span>
+                            </li>
+                        </ul>
+                        <p class="mt-2 text-small text-muted">Los documentos abren en una nueva pestaña.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="govco-row mt-5">
+                <div class="govco-col-12">
+                    <div class="govco-info-message">
+                        <p>Para explorar las metas específicas, avances y realizar seguimiento, por favor, <a href="{{ url_for('usuario_bp.login') }}">inicie sesión</a> o regístrese si es un usuario autorizado.</p>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+    </main>
+
+    <section class="govco-contact-info-section">
+        <div class="govco-container">
+            <div class="govco-contact-grid">
+                <div class="govco-contact-item">
+                    <h3>Alcaldía Municipal de Zipaquirá</h3>
+                    <p><strong>Dirección:</strong> CASA DE GOBIERNO: Calle 5 No 7 - 70. Barrio Centro // PALACIO MUNICIPAL: Carrera 7 No 4 - 11. Frente a la Plaza de Los Comuneros. Código Postal: 250262</p>
+                    <p><strong>Horario de atención:</strong> Lunes a jueves de 7:00 a.m. a 12:30 p.m. y de 1:30 p.m. a 5:00 p.m. Los viernes de 7:00 a.m. a 12:00 p.m. y de 1:00 p.m. a 4:30 p.m.</p>
+                    <p><strong>Teléfono Conmutador:</strong> (601) 844 5064</p>
+                    <p><strong>Línea de atención gratuita:</strong> (601) 888 2415</p>
+                    <p><strong>Correo institucional:</strong> alcaldia@zipaquira-cundinamarca.gov.co</p>
+                    <p><strong>Correo de notificaciones judiciales:</strong> oficinaasesorjuridica@zipaquira-cundinamarca.gov.co</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <footer class="govco-simple-footer">
+        <div class="govco-container">
+            <div class="govco-footer-content">
+                <img src="{{ url_for('static', filename='img/escudo_zipaquira.png') }}" alt="Escudo de Zipaquirá" class="govco-footer-logo">
+                <p>Alcaldía Municipal de Zipaquirá</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
