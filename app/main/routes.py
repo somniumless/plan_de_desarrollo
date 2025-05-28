@@ -1,5 +1,5 @@
 # app/main/routes.py
-from flask import render_template, redirect, url_for
+from flask import render_template, redirect, url_for, Blueprint, current_app, send_from_directory
 from flask_login import login_required, current_user
 from app.main import main_bp
 
@@ -35,3 +35,14 @@ def dashboard_privado():
         {'nombre': 'Tarea Pendiente X', 'estado': 'Pendiente', 'avance': '0%', 'fecha_limite': '2025-06-15'},
     ]
     return render_template('private/dashboard.html', title='Mi Dashboard', user=current_user, metas=metas_del_usuario)
+
+@main_bp.route('/ver_plan_completo')
+def serve_plan_completo_pdf():
+    pdf_filename = 'Plan de desarrollo.pdf' 
+    directory = current_app.static_folder + '/documentos' 
+
+    return send_from_directory(
+        directory=directory,
+        path=pdf_filename,
+        as_attachment=False 
+    )
