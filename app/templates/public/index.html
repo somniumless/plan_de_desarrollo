@@ -20,6 +20,10 @@
             <div class="govco-container">
                 <ul>
                     <li><a href="/">Inicio</a></li>
+                    <li><a href="{{ url_for('main.plan_detalles') }}">Plan de Desarrollo</a></li>
+                    <li><a href="{{ url_for('main.preguntas_frecuentes') }}">Preguntas Frecuentes</a></li>
+                    <li><a href="{{ url_for('main.contacto') }}">Contacto</a></li>
+                    
                     {% if current_user.is_authenticated %}
                         <li><a href="{{ url_for('metas_bp.gestion_metas_page') }}">Gestión de Metas</a></li>
                         <li><a href="{{ url_for('usuario_bp.logout') }}">Cerrar Sesión</a></li>
@@ -36,7 +40,7 @@
             <div class="govco-container">
                 <img src="{{ url_for('static', filename='img/alcaldia.png') }}" alt="Alcaldía de Zipaquirá - Plan de Desarrollo" class="govco-banner-image">
                 <div class="govco-banner-content">
-                    <h1>Plan de Desarrollo Municipal 2024-2027</h1>
+                    <h1>Plan de Desarrollo Municipal 2024-2028</h1>
                     <p>ZlPAQUlRÁ CREE, PROTEGE Y AVANZA.</p>
                 </div>
             </div>
@@ -67,7 +71,8 @@
         <section class="govco-section govco-container govco-call-to-action">
             <h2>¿Quieres saber más?</h2>
             <p>Explora los detalles completos de nuestro Plan.</p>
-           <a href="{{ url_for('main.serve_plan_completo_pdf') }}" class="govco-button govco-button-primary" target="_blank">Ver Plan Completo</a>
+            {# ESTE ENLACE TAMBIÉN DEBE IR A LA NUEVA PÁGINA DE DETALLES #}
+            <a href="{{ url_for('main.plan_detalles') }}" class="govco-button govco-button-primary">Ver Plan Completo</a>
         </section>
     </main>
 
