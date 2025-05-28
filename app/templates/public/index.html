@@ -21,9 +21,10 @@
                 <ul>
                     <li><a href="/">Inicio</a></li>
                     <li><a href="{{ url_for('main.plan_detalles') }}">Plan de Desarrollo</a></li>
-                    <li><a href="{{ url_for('main.dashboard') }}">Dashboard</a></li>
 
+                    {# El botón del Dashboard AHORA solo se muestra si el usuario está autenticado #}
                     {% if current_user.is_authenticated %}
+                        <li><a href="{{ url_for('main.dashboard') }}">Dashboard</a></li>
                         <li><a href="{{ url_for('metas_bp.gestion_metas_page') }}">Gestión de Metas</a></li>
                         <li><a href="{{ url_for('usuario_bp.logout') }}">Cerrar Sesión</a></li>
                     {% else %}
